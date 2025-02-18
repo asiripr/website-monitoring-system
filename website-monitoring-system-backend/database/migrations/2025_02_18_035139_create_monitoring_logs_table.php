@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('monitoring_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('website_id')->constrained('websites')->onDelete('cascade');            
+            // auto incrementing primary key
+            $table->id(); 
+            // website_id = id column of websites table, and if a record of websites table deleted -> it will removed the all related logs within this as well
+            $table->foreignId('website_id')->constrained('websites')->onDelete('cascade');  
+            // check website availability      
             $table->enum('ststus', ['up','down']);
+            // response time in ms
             $table->integer('response_time')->nullable();
+            // store website last checked time
             $table->timestamp('checked_at')->useCurrent();    
             $table->timestamps();
         });

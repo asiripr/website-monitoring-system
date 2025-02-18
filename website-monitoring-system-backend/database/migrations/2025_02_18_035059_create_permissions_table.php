@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table) {
+            // auto incrementing primary key
             $table->id();
-            $table->string('name')->unique();
+            // create name column 
+            $table->string('name');
             $table->timestamps();
         });
     }
