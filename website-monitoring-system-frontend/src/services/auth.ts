@@ -4,13 +4,32 @@ import API from "./api";
 
 export const login = async (email: string, password: string) => {
     // get csrf token before login -> API requests to Laravel
-    await API.get("/sanctum/csrf-cookie"); 
-    return API.post("/login", {email, password});
+    await API.get("/sanctum/csrf-cookie");
+    return API.post("/login", { email, password });
 };
 
 // logout function -> API requests to Laravel
 export const logout = async () => {
     return API.post("/logout");
+};
+
+// register function 
+export const register = async (name: string, email: string, password: string) => {
+    // ensure csrf token is obtained
+    await API.get("/sanctum/csrf-cookie");
+    try {
+        const response = await API.post("/register", {
+            name,
+            email,
+            password,
+            password_confirmation: password
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Registration failed:", error);
+        throw error;
+    }
+
 };
 
 // get logged-in user -> if authenticated, fetches the currently logged-in user

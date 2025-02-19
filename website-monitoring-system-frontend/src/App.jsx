@@ -1,34 +1,30 @@
-import AddWebsites from './pages/AddWebsites';
-import Dashboard from './pages/Dashboard';
-import Logout from './pages/Logout';
-import MonitoringLogs from './pages/MonitoringLogs';
-import Settings from './pages/Settings';
-import Websites from './pages/Websites';
-import Sidebar from './Sidebar';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getUser } from "./services/auth";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import LogoutButton from "./components/LogoutButton";
+import Register from "./pages/Register";
 
-function App() {
+const App = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    getUser()
+      .then(response => setUser(response.data))
+      .catch(() => setUser(null));
+  }, []);
+
   return (
-    <BrowserRouter>
-    <div className='d-flex'>
-      <div className='col-auto'>
-        <Sidebar />
-      </div>
-      <div>
-        <Routes>
-          <Route path='/' element={<Dashboard />}></Route>
-          <Route path='/websites' element={<Websites />}></Route>
-          <Route path='/add-websites' element={<AddWebsites />}></Route>
-          <Route path='/monitoring-logs' element={<MonitoringLogs />}></Route>
-          <Route path='/settings' element={<Settings />}></Route>
-          <Route path='/logout' element={<Logout />}></Route>
-        </Routes>
-      </div>
-    </div>
-  </BrowserRouter>
-
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+      </Routes>
+      {user && <LogoutButton />}
+    </Router>
   );
-}
+};
 
 export default App;
-
