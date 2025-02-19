@@ -15,11 +15,13 @@ return [
     |
     */
 
-    'paths' => ['*'],
+    // 'paths' => ['*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'], // this has been changed to integrated with react frontend based on sanctum
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    // 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    'allowed_origins' => ['http://localhost:5173'], // Allow React frontend
 
     'allowed_origins_patterns' => [],
 
