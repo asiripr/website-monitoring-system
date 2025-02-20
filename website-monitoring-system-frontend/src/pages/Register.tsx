@@ -36,20 +36,49 @@ const Register = () => {
         }
     };
 
-
     return (
-        <div className="register-container">
-            <h1>Register</h1>
-            <h2>Website Monitoring System</h2>
+        <div className="flex items-center justify-center min-h-screen bg-gray-300 text-white">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+                <h1 className="text-2xl font-bold mb-4 text-black">Register</h1>
+                <h2 className="text-xl mb-6 text-black">Website Monitoring System</h2>
 
-            {/*  defines a form that calls the handleRegister function when submitted. */}
-            <form onSubmit={handleRegister}>
-                <input type="text" placeholder="Name" value={name} onChange={e => setName(e.target.value)} required /><br />
-                <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required /><br />
-                <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required /><br />
-                <button type="submit">Register</button>
-            </form>
-            <p>Already have an account? <a href="/login">Login</a></p>
+                {/*  defines a form that calls the handleRegister function when submitted. */}
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        required
+                        className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-200"
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                        className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-200"
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-200"
+                    />
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                        Register
+                    </button>
+                </form>
+                <p className="text-center mt-4 text-black">
+                    Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
+                </p>
+            </div>
         </div>
     );
 };
