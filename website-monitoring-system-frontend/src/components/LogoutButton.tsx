@@ -10,7 +10,7 @@ const LogoutButton = () => {
         try {
             await logout();
             alert("Logged out successfully!");
-            //  redirect the user to the login page if the logout is successfu//
+            //  redirect the user to the login page if the logout is successfull
             navigate("/login");
         }catch( error ){
             alert( "Logout failed." );
