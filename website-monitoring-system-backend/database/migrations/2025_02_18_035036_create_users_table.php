@@ -21,7 +21,8 @@ return new class extends Migration
             // email verified time
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            
+            // role_id = id column of roles table, and if a record of roles table deleted -> it will removed the all related recodes within this as well
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
