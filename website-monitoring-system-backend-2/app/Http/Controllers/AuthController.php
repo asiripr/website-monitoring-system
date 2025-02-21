@@ -10,14 +10,23 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $fields = $request->validate([
+        $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed'
 
         ]);
 
-        $user = User::create($fields);
+        $roleId = $request->role_id ?? 2; // Default role_id = 2 for "User"
+
+        $user = User::create(
+            [
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => $roleId
+            ]
+        );
 
         $token = $user->createToken($request->name);
 
@@ -26,7 +35,7 @@ class AuthController extends Controller
             'token' => $token
         ];
     }
-    public function login(Request $request) 
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users',
@@ -38,7 +47,7 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return [
-                'message'=> 'The provided credentials are incorrect!'
+                'message' => 'The provided credentials are incorrect!'
             ];
         }
 
@@ -48,7 +57,6 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token->plainTextToken
         ];
-
     }
 
     public function logout(Request $request)
