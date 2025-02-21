@@ -23,21 +23,25 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:6'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->string('password')),
+            'password' => Hash::make($request->password),
         ]);
 
         event(new Registered($user));
 
         // return response()->json($user,201);
 
-        Auth::login($user);
+        // Auth::login($user);
 
-        return response()->json(['message' => 'User registered successfully']);
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user,
+            'token' => $user->createToken('auth-token')->plainTextToken, // Only if using Laravel Sanctum
+        ], 201);
     }
 }
