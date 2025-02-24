@@ -5,7 +5,7 @@ import React from "react";
 
 const Login = () => {
   // initialize empty string and function for update email
-  const [email, setEmail] = useState(""); 
+  const [email, setEmail] = useState("");
 
   // initialize empty string and function for update password
   const [password, setPassword] = useState("");
@@ -22,7 +22,7 @@ const Login = () => {
 
       // calls the login function with the current email and password
       await login(email, password);
-      alert("Login Successfull!");
+      alert("Login Successful!");
 
       // redirect to dashboard
       navigate("/dashboard");
@@ -34,18 +34,41 @@ const Login = () => {
     }
   };
 
-
   return (
-    <div className="login-container">
-      <h1>Login</h1>
-      <h2>Website Monitoring System</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-300">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h1 className="text-2xl font-bold mb-4 text-black">Login</h1>
+        <h2 className="text-xl mb-6 text-black">Website Monitoring System</h2>
 
-      {/*  defines a form that calls the handleLogin function when submitted. */}
-      <form onSubmit={handleLogin}>
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required /><br />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required /><br />
-        <button type="submit">Login</button>
-      </form>
+        {/*  defines a form that calls the handleLogin function when submitted. */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-200"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            className="text-black w-full px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-200"
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+        <p className="text-center mt-4 text-black">
+          Create new account? <a href="/register" className="text-blue-500 hover:underline">Register</a>
+        </p>
+      </div>
     </div>
   );
 };
