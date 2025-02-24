@@ -67,4 +67,8 @@ class AuthController extends Controller
             'message' => 'You are logged out.'
         ];
     }
+
+     function print1() {
+        return response()->json(['message' => 'API is working!']);
+    }
 }
