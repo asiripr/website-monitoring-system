@@ -12,6 +12,7 @@ import Layout from "./components/Layout";
 import Unauthorized from "./pages/Unauthorized";
 import Websites from "./pages/Websites";
 import AddWebsites from "./pages/AddWebsites";
+import MonitoringLogs from "./pages/MonitoringLogs";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<Websites />} />
           <Route path="/websites/add" element={<AddWebsites />} />
+          <Route path="/monitoring-logs" element={<MonitoringLogs />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
         </Route>
 

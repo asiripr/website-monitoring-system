@@ -4,7 +4,6 @@ import API from "../services/api";
 
 const AddWebsites = () => {
   const [url, setUrl] = useState("");
-  const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -13,8 +12,10 @@ const AddWebsites = () => {
     setIsSubmitting(true);
 
     try {
+      await API.get("/sanctum/csrf-cookie");
       //sending the new website details to the backend API
-      await API.post("/websites", { url });
+      console.log({ url });
+      await API.post("/api/add-website", url);
       alert("Website added successfully!");
       navigate("/websites");
 
@@ -28,7 +29,7 @@ const AddWebsites = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">AddWebsites Page</h2>
+      <h2 className="text-2xl font-bold mb-4">Add  New Website</h2>
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-6 rounded shadow">
         <div className="mb-4">
           <label htmlFor="url" className="block text-gray-700 font-medium mb-2">
