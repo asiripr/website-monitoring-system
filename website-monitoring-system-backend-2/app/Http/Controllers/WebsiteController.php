@@ -29,10 +29,11 @@ class WebsiteController extends Controller
     public function store(Request $request)
     {
         // Validate input
-        $validated = $request->validate([
-            'url' => 'required',
-            'check_interval' => 'nullable|integer|min:30',
-        ]);
+        // $validated = $request->validate([
+        //     'url' => 'required',
+        //     'check_interval' => 'nullable|integer|min:30',
+        // ]);
+        $validated = $request->all();
 
         // $validated['user_id'] = $request->user()->id; 
         $validated['user_id'] = 12;

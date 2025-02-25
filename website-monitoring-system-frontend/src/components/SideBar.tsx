@@ -22,13 +22,13 @@ const SideBar = () => {
                     </li>
                     {userRole === "admin" && (
                         <>
-                            <li className={activeLink === '/users' ? 'text-white' : ''} onClick={() => handleLinkClick('/users')}>
-                                <Link to="/users" className="flex items-center p-2 hover:text-white">
+                            <li className={activeLink === '/musers' ? 'text-white' : ''} onClick={() => handleLinkClick('/musers')}>
+                                <Link to="/musers" className="flex items-center p-2 hover:text-white">
                                     <FaUsers className="inline mr-2" /> Manage Users
                                 </Link>
                             </li>
-                            <li className={activeLink === '/roles' ? 'text-white' : ''} onClick={() => handleLinkClick('/roles')}>
-                                <Link to="/roles" className="flex items-center p-2 hover:text-white">
+                            <li className={activeLink === '/mroles' ? 'text-white' : ''} onClick={() => handleLinkClick('/mroles')}>
+                                <Link to="/mroles" className="flex items-center p-2 hover:text-white">
                                     <FaShieldAlt className="inline mr-2" /> Manage Roles
                                 </Link>
                             </li>
