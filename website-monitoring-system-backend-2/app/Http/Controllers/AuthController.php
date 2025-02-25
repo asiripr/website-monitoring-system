@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,10 +29,15 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->name);
 
-        return [
-            'user' => $user,
-            'token' => $token
-        ];
+        // return [
+        //     'user' => $user,
+        //     'token' => $token
+        // ];
+
+        // Log in the user
+        // AuthController::login($user);
+
+        return response()->json($user, 201);
     }
     public function login(Request $request)
     {
@@ -68,7 +72,8 @@ class AuthController extends Controller
         ];
     }
 
-     function print1() {
+    function print1()
+    {
         return response()->json(['message' => 'API is working!']);
     }
 }

@@ -12,16 +12,22 @@ const Login = () => {
 
   // redirect the user to the dashboard if the login is successfull
   const navigate = useNavigate();
+  // to prevent double press the button
+  const [isLoading, setIsLoading] = useState(false);
 
   // function for handle the form submission
   const handleLogin = async (e: React.FormEvent) => {
 
     // prevents the default form submission behavior, which would normally reload the page.
     e.preventDefault();
+    // Prevent multiple submissions
+    if (isLoading) return; 
+    setIsLoading(true);
     try {
 
       // calls the login function with the current email and password
       await login(email, password);
+      // const user = await getUser();
       alert("Login Successful!");
 
       // redirect to dashboard
@@ -60,6 +66,7 @@ const Login = () => {
           />
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Login
