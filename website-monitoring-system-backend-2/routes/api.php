@@ -3,7 +3,11 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
+// fetch csrf cookie
+Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
 
 // User Registration
 Route::post('/register', [AuthController::class, 'register'])

@@ -10,6 +10,8 @@ import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
 import Layout from "./components/Layout";
 import Unauthorized from "./pages/Unauthorized";
+import Websites from "./pages/Websites";
+import AddWebsites from "./pages/AddWebsites";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -32,6 +34,8 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/websites" element={<Websites />} />
+          <Route path="/websites/add" element={<AddWebsites />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
         </Route>
 
