@@ -6,16 +6,22 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 // User Registration
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])
+    ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
 
 // User Login
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
 
-// User Logout (Requires Authentication)
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+// Protected routes (auth required)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
 
-// Get Logged-in User Info (Requires Authentication)
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {
+    return response()->json(['message' => 'Welcome Admin!']);
 });
 
