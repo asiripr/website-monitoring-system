@@ -24,15 +24,6 @@ const TopBar = () => {
           console.error("Logout failed: ", error);
         }
       };
-    // const handleLogout = async () => {
-    //     try {
-    //         await API.post("/logout");
-    //         localStorage.removeItem("user"); // Clear user data
-    //         navigate("/login"); // Redirect to login page
-    //     } catch (error) {
-    //         console.error("Logout failed", error);
-    //     }
-    // };
 
     // Navigate to Login Page
     const handleLogin = () => {
@@ -48,11 +39,11 @@ const TopBar = () => {
         <div className="bg-white flex justify-between items-center p-4 shadow-md">
             <h1 className="text-black text-2xl font-bold">Website Monitoring System</h1>
             <div className="flex items-center space-x-4">
-                { user?.name ? ( 
+                {user?.name ? (
                     <>
                         <span className="text-gray-600">Welcome, {user.name}</span>
                         <button
-                            onClick ={() => { handleLogout; window.location.href = "/login"; }}
+                            onClick={() => { localStorage.removeItem("token"); window.location.href = "/login"; }}
                             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                         >
                             Logout
