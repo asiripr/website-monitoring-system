@@ -9,13 +9,6 @@ type Website = {
   lastCheckedAt: string;
 }
 
-// dummy data
-// const dummyWebsites: Website[] = [
-//   {id:1, url:"https://fourpixell.com", status:"up", lastCheckedAt:"2025-02-17 09:00"},
-//   {id:2, url:"https://swarnawahini.com", status:"down", lastCheckedAt:"2025-02-17 09:00"},
-//   {id:3, url:"https://facebook.com", status:"unknown", lastCheckedAt:"2025-02-17 09:00"},
-// ]
-
 const Websites = () => {
 
   // data fetching part
@@ -34,7 +27,8 @@ const Websites = () => {
       setError("Failed to load websites.");
       setLoading(false);
     })
-  });
+  // finally we have to add an empty array for ensures it runs only once when the component mounts
+  },[]);
 
   return (
     <div className="p-4">
@@ -51,7 +45,6 @@ const Websites = () => {
         <tbody>
           {websites.map((website) => (
             <tr key={website.id}>
-              <td className="py-2 px-4 border-b text-center">{website.id}</td>
               <td className="py-2 px-4 border-b text-center">{website.url}</td>
               <td className="py-2 px-4 border-b text-center">
                 <span
