@@ -156,7 +156,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('SESSION_DOMAIN', '127.0.0.1', '127.0.0.1:5173'),
 
     /*
     |--------------------------------------------------------------------------
@@ -202,8 +202,8 @@ return [
     |
     */
 
-    'same_site' => 'none',
-    // 'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    // 'same_site' => 'none',
+    'same_site' => env('SESSION_SAME_SITE', 'lax'),
 
     /*
     |--------------------------------------------------------------------------

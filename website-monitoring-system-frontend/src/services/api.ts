@@ -19,7 +19,7 @@ const API = axios.create({
 // Add CSRF token handling
 API.interceptors.request.use(async (config) => {
     if (!document.cookie.includes('XSRF-TOKEN')) {
-        await axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie', {
+        await axios.get('http://127.0.0.1:8000/api/sanctum/csrf-cookie', {
             withCredentials: true
         });
     }

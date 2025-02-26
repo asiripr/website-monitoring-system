@@ -17,7 +17,7 @@ return new class extends Migration
             // user_id = id column of users table, and if a record of users table deleted -> it will removed the all related logs within this as well
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             // create url column with unique values
-            $table->string('url')->unique();
+            $table->string('url')->default('https://google.com');
             // status column, only 3 values, default is 'unknown'
             $table->enum('status', ['up', 'down', 'unknown'])->default('unknown'); 
             // last checked time

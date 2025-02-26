@@ -23,12 +23,12 @@ Route::get('/sanctum/csrf-cookie', function () {
 
 
 // User Registration
-Route::post('/register', [AuthController::class, 'register'])
-    ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
+Route::post('/register', [AuthController::class, 'register']);
+    // ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
 
 // User Login
-Route::post('/login', [AuthController::class, 'login'])
-    ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
+Route::post('/login', [AuthController::class, 'login']);
+    // ->middleware(['web', 'auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
 
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {

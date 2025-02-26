@@ -19,7 +19,7 @@ export const register = async (name: string, email: string, password: string, pa
         console.error("Registration Error: ", error);
         throw error;
     }
-
+// as long as you feel pain you 
 };
 
 // login function -> working with sanctum

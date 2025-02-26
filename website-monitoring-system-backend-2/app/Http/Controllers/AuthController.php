@@ -29,15 +29,15 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->name);
 
-        // return [
-        //     'user' => $user,
-        //     'token' => $token
-        // ];
+        return [
+            'user' => $user,
+            'token' => $token
+        ];
 
-        // Log in the user
-        // AuthController::login($user);
+        // Register the user
+        AuthController::register($user);
 
-        return response()->json($user, 201);
+        // return response()->json($user, 201);
     }
     public function login(Request $request)
     {
