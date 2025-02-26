@@ -14,6 +14,11 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response()->noContent();
 });
 
+// fetch websites
+Route::get('/websites', function () {
+    return response()->json(Website::all());
+});
+
 // add new website
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::post('/add-website', [WebsiteController::class, 'store']);
