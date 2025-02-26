@@ -11,12 +11,30 @@ const AddWebsites = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Get the token from localStorage (ensure it's stored correctly)
+    const token = localStorage.getItem("token");
+
     try {
       await API.get("/sanctum/csrf-cookie");
-      //sending the new website details to the backend API
+
       console.log({ url });
-      await API.post("/api/add-website", url);
+
+      const token = localStorage.getItem('auth_token');
+
+      const response = await API.post(
+        "/api/add-website",
+        // attach the url as an oblect
+        { url },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      //return response.data;
+
       alert("Website added successfully!");
+      // redirect after success
       navigate("/websites");
 
     } catch (error) {
@@ -25,7 +43,7 @@ const AddWebsites = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="p-4">
