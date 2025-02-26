@@ -12,7 +12,7 @@ const SideBar = () => {
     };
 
     return (
-        <div className="bg-[#616E80] text-gray-300 w-64 h-screen">
+        <div className="bg-[#616E80] text-gray-300 w-50 h-screen">
             <nav className="space-y-2 py-4">
                 <ul>
                     <li className={activeLink === '/dashboard' ? 'text-white' : ''} onClick={() => handleLinkClick('/dashboard')}>
@@ -52,11 +52,6 @@ const SideBar = () => {
                     <li className={activeLink === '/settings' ? 'text-white' : ''} onClick={() => handleLinkClick('/settings')}>
                         <Link to="/settings" className="flex items-center p-2 hover:text-white">
                             <FaCog className="inline mr-2" /> Settings
-                        </Link>
-                    </li>
-                    <li className={activeLink === '/logout' ? 'text-white' : ''} onClick={() => handleLinkClick('/logout')}>
-                        <Link to="/logout" className="flex items-center p-2 hover:text-white">
-                            <FaSignOutAlt className="inline mr-2" /> Logout
                         </Link>
                     </li>
                 </ul>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import axios from "axios";
 
 const TopBar = () => {
     const navigate = useNavigate();
@@ -11,13 +12,18 @@ const TopBar = () => {
     // Logout Function
     const handleLogout = async () => {
         try {
-            await API.post("/logout");
-            localStorage.removeItem("user"); // Clear user data
-            navigate("/login"); // Redirect to login page
+          await axios.post("http://127.0.0.1:8000/api/logout", {}, {
+            headers: { Authorization: 'Bearer ${localStorage.getItem("token")}' }
+          });
+          // remove token from the local storage
+          localStorage.removeItem("token");
+    
+          // redirect to login page
+          navigate('/login');
         } catch (error) {
-            console.error("Logout failed", error);
+          console.error("Logout failed: ", error);
         }
-    };
+      };
 
     // Navigate to Login Page
     const handleLogin = () => {
@@ -37,7 +43,7 @@ const TopBar = () => {
                     <>
                         <span className="text-gray-600">Welcome, {user.name}</span>
                         <button
-                            onClick={handleLogout}
+                            onClick={() => { localStorage.removeItem("token"); window.location.href = "/login"; }}
                             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                         >
                             Logout

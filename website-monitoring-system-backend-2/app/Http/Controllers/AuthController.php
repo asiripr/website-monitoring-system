@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -29,15 +31,15 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->name);
 
-        // return [
-        //     'user' => $user,
-        //     'token' => $token
-        // ];
+        return [
+            'user' => $user,
+            'token' => $token
+        ];
 
-        // Log in the user
-        // AuthController::login($user);
+        // Register the user
+        AuthController::register($user);
 
-        return response()->json($user, 201);
+        // return response()->json($user, 201);
     }
     public function login(Request $request)
     {
@@ -56,11 +58,18 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken($user->name);
-
+        // $token = $user->createToken('auth_token')->plainTextToken;
         return [
             'user' => $user,
             'token' => $token->plainTextToken
         ];
+        // if (Auth::attempt($request)) {
+        //     $user = Auth::user();
+        //     return response()->json([
+        //         'user' => $user,
+        //         'token' => $token, // Send the token to the frontend
+        //     ]);
+        // }
     }
 
     public function logout(Request $request)

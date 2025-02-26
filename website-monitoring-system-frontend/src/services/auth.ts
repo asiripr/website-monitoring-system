@@ -2,8 +2,6 @@ import API from "./api";
 
 // register function 
 export const register = async (name: string, email: string, password: string, password_confirmation: string, role_id = 2) => {
-
-
     try {
         // ensure csrf token is obtained
         await API.get("/sanctum/csrf-cookie");
@@ -19,7 +17,7 @@ export const register = async (name: string, email: string, password: string, pa
         console.error("Registration Error: ", error);
         throw error;
     }
-
+// as long as you feel pain you 
 };
 
 // login function -> working with sanctum
@@ -30,9 +28,10 @@ export const login = async (email: string, password: string) => {
         await API.get("/sanctum/csrf-cookie");
         // return API.post("/login", { email, password });
         const response = await API.post("/api/login", { email, password });
-
+        // store the token
+        localStorage.setItem('auth_token', response.data.token); 
         // store user data in localStorage or Context API
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        // localStorage.setItem("user", JSON.stringify(response.data.user));
 
         return response.data;
 
