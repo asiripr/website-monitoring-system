@@ -36,7 +36,6 @@ const Websites = () => {
       <table className="min-w-full border border-gray-200 bg-white">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b">ID</th>
             <th className="py-2 px-4 border-b">URL</th>
             <th className="py-2 px-4 border-b">Status</th>
             <th className="py-2 px-4 border-b">Last Checked</th>
@@ -56,7 +55,7 @@ const Websites = () => {
                     }`}
                 >{website.status.toUpperCase()}</span>
               </td>
-              <td className="py-2 px-4 border-b text-center">{website.lastCheckedAt}</td>
+              <td className="py-2 px-4 border-b text-center">{!website.lastCheckedAt == null ? website.lastCheckedAt: "Unknown"}</td>
             </tr>
           ))}
         </tbody>
