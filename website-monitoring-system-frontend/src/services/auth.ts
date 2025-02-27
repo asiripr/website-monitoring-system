@@ -31,7 +31,8 @@ export const login = async (email: string, password: string) => {
         // store the token
         localStorage.setItem('auth_token', response.data.token); 
         // store user data in localStorage or Context API
-        // localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
 
         return response.data;
 

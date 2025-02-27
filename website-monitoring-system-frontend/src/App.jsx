@@ -16,6 +16,7 @@ import MonitoringLogs from "./pages/MonitoringLogs";
 import ManageUsers from "./pages/ManageUsers";
 import ManageRoles from "./pages/ManageRoles";
 import MonitoringLogsDetails from "./pages/MonitoringLogsDetails";
+import Settings from "./pages/Settings";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/monitoring/logs/:id" element={<MonitoringLogsDetails />} />
           <Route path="/musers" element={<ManageUsers/>} />
           <Route path="/mroles" element={<ManageRoles />} />
+          <Route path="/settings" element={<Settings />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
         </Route>
 

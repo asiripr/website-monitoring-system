@@ -39,7 +39,7 @@ const Register = () => {
             alert("Registration successful! You can now log in.");
 
             // redirect to login
-            // navigate("/login");
+            navigate('/login');
         } catch (error) {
 
             // shows an alert
