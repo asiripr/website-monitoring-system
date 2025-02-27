@@ -27,6 +27,8 @@ const Login = () => {
 
       // calls the login function with the current email and password
       await login(email, password);
+
+      
       // const user = await getUser();
       alert("Login Successful!");
 
