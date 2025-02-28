@@ -1,59 +1,113 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
-
-  // dummy data
   const [user, setUser] = useState({
-    name: "Kasun Kalhara",
-    email: "kasun@gmail.com"
+    name: "",
+    email: ""
   });
-
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // fetch user data on component mount
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await API.get("/api/user", {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   // handle profile update
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdating(true);
-    setTimeout(() => {
+    try {
+      const response = await API.put('/user', {
+        name: user.name,
+        email: user.email
+      });
       alert("Profile Updated Succesfully!");
-      setIsUpdating(false);
-    }, 1000);
+      setUser(response.data.user);
+    } catch (error) {
+      alert("Failed to update profile");
+      console.error(error);
+    }
+    setIsUpdating(false);
   };
 
   // handle password change
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    alert("Password updated successfully!");
-    setNewPassword("");
-    setConfirmPassword("");
+    try {
+      await API.post('/user/password', {
+        new_password: newPassword,
+        new_password_confirmation: confirmPassword
+      });
+      alert("Password updated successfully!");
+      setNewPassword("");
+      setConfirmPassword("");
+
+    } catch (error) {
+      alert("Failed to change password");
+      console.error(error);
+    }
   };
 
   // handle logout
-  const handleLogout = () => {
-    // clear token
+  const handleLogout = async () => {
+    try {
+      await API.post('/logout');
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+    // clear tokens
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
   // handle account deletion
-  const handleDeleteAccount = () => {
-    if (window.confirm("Are you sure want to delete your account?")) {
-      setIsDeleting(true);
-      setTimeout(() => {
-        alert("Account deleted successfully!");
-        localStorage.removeItem("token");
-        navigate("/register");
-      }, 1000);
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete your account?")) return;
+
+    if (!currentPassword) {
+      alert("Please enter your current password to confirm deletion");
+      return;
     }
+
+    setIsDeleting(true);
+
+    try {
+      await API.delete('/user', {
+        data: { password: currentPassword }
+      });
+      // clear tokens
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      alert("Account deleted successfully!");
+      navigate("/register");
+    } catch (error) {
+      alert("Failed to delete account");
+      console.error(error);
+    }
+
   };
   return (
     <div className="pl-20 pt-6">
@@ -128,9 +182,22 @@ const Settings: React.FC = () => {
 
       {/* Delete Account */}
       <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-700">Delete Account</h3>
+        <div className="mt-4">
+          <label className="block text-gray-600">Current Password</label>
+          <input
+            type="password"
+            className="w-3/4 border p-2 rounded mb-2"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
+
+        </div>
         <button
           onClick={handleDeleteAccount}
-          className={`w-3/4 bg-red-500 text-white p-2 rounded ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"}`}
+          className={`w-3/4 bg-red-500 text-white p-2 rounded ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
+            }`}
           disabled={isDeleting}
         >
           {isDeleting ? "Deleting..." : "Delete Account"}

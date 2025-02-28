@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use App\Models\Website;
 use Illuminate\Http\Request;
@@ -28,13 +29,17 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', [UserController::class, 'user']);
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Token revoked, logged out successfully'], 200);
     });
+    // profile update
+    Route::put('/user', [UserController::class, 'update']);
+    // change password
+    Route::post('/user/password', [UserController::class, 'changePassword']);
+    // account delete
+    Route::delete('/user', [UserController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {
