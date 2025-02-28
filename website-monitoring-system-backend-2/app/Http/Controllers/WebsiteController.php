@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CheckWebsiteStatus;
 use App\Models\Website;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,26 @@ class WebsiteController extends Controller
         //     'status' => 'nullable|string',
         //     'last_checked_at' => 'nullable|date',
         // ]);
+// // ******************new part
 
+//         $validated = $request->validate([
+//             // 'name' => 'required|string|max:255',
+//             'url' => 'required|url|max:512',
+//         ]);
+//         $website = Website::create([
+//             'user_id' => $request->user()->id,
+//             // 'name' => $validated['name'],
+//             'url' => $validated['url'],
+//             'status' => 'unknown',
+//         ]);
+
+//         CheckWebsiteStatus::dispatch($website->id);
+
+//         return response()->json([
+//             'message' => 'Website created successfully',
+//             'website' => $website->load('monitoringLogs'),
+//         ], 201);
+// // ******************new part
         // get the authenticated user from the token
         $user = $request->user();
 
@@ -48,6 +68,9 @@ class WebsiteController extends Controller
         $input['last_checked_at'] = $input['last_checked_at'] ?? null;
 
         $website = Website::create($input);
+
+        // Check immediately
+        CheckWebsiteStatus::dispatch($website);
 
         return response()->json([
             'message' => 'Website created successfully',
@@ -86,5 +109,10 @@ class WebsiteController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function checkNow(Website $website)
+    {
+        CheckWebsiteStatus::dispatch($website);
     }
 }

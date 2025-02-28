@@ -10,7 +10,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
-use PhpParser\Node\Stmt\TryCatch;
 
 class CheckWebsiteStatus implements ShouldQueue
 {
@@ -21,22 +20,21 @@ class CheckWebsiteStatus implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
-    {
-        $this->website = $website;
-    }
+    public function __construct(protected int $websiteId) {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
+        $website = Website::findOrFail($this->websiteId);
+
         $startTime = microtime(true);
 
         try {
             $response = Http::timeout(10)->get($this->website->url);
             $endtime = microtime(true);
-            $responseTime = round(($endtime - $startTime)*1000);
+            $responseTime = round(($endtime - $startTime) * 1000);
 
             // determine status based on HTTP response
             $status = $response->successful() ? 'up' : 'down';
@@ -49,7 +47,8 @@ class CheckWebsiteStatus implements ShouldQueue
         // update the website record with new status and last checked timestamp
         $this->website->update([
             'status' => $status,
-            'last_checked_at' => now()
+            'last_checked_at' => now(),
+            'response_time' => $responseTime,
         ]);
 
         // create a new monitoring record

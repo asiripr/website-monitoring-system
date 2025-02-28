@@ -9,7 +9,7 @@ const Logout = () => {
   const handleLogout = async () => {
     try {
       await axios.post("http://127.0.0.1:8000/api/logout", {}, {
-        headers: { Authorization: 'Bearer ${localStorage.getItem("token")}' }
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
       // remove token from the local storage
       localStorage.removeItem("token");

@@ -12,14 +12,13 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response()->noContent();
 });
 
-// fetch websites
-Route::get('/websites', function () {
-    return response()->json(Website::all());
-});
-
-
 Route::post('/add-website', [WebsiteController::class, 'store']);
 
+// returns all websites with their status
+Route::get('/websites', [WebsiteController::class, 'index']);
+
+// returns detailed logs for a specific website
+Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 
 // User Registration
 Route::post('/register', [AuthController::class, 'register']);
@@ -41,11 +40,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // account delete
     Route::delete('/user', [UserController::class, 'destroy']);
 
-    // returns all websites with their status
-    Route::get('/websites', [WebsiteController::class, 'index']);
+    // // returns all websites with their status
+    // Route::get('/websites', [WebsiteController::class, 'index']);
 
-    // returns detailed logs for a specific website
-    Route::get('/websites/{id}', [WebsiteController::class, 'show']);
+    // // returns detailed logs for a specific website
+    // Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {
