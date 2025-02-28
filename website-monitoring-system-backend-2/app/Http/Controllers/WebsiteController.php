@@ -13,6 +13,7 @@ class WebsiteController extends Controller
     public function index()
     {
         //
+        return response()->json(Website::with('monitoringLogs')->get());
     }
 
     /**
@@ -59,7 +60,8 @@ class WebsiteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $website = Website::with('monitoringLogs')->findOrFail($id);
+        return response()->json($website);
     }
 
     /**

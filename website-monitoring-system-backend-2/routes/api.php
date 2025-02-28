@@ -40,6 +40,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user/password', [UserController::class, 'changePassword']);
     // account delete
     Route::delete('/user', [UserController::class, 'destroy']);
+
+    // returns all websites with their status
+    Route::get('/websites', [WebsiteController::class, 'index']);
+
+    // returns detailed logs for a specific website
+    Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {
