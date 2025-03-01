@@ -13,7 +13,11 @@ class WebsiteController extends Controller
      */
     public function index()
     {
-        //
+        $websites = Website::all();
+
+        return response()->json([
+            'websites' => $websites
+        ]);
     }
 
     /**

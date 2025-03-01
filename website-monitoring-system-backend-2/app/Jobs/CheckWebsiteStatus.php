@@ -20,14 +20,15 @@ class CheckWebsiteStatus implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected int $websiteId) {}
+    public function __construct(Website $website) {
+        $this->website = $website;
+    }
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        $website = Website::findOrFail($this->websiteId);
 
         $startTime = microtime(true);
 

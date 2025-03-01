@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MonitoringLogsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use App\Models\Website;
@@ -13,7 +14,7 @@ Route::get('/sanctum/csrf-cookie', function () {
 });
 
 // returns detailed logs for a specific website
-Route::get('/websites/{id}', [WebsiteController::class, 'show']);
+Route::get('/websites/{id}', [WebsiteController::class, 'show']); // ***
 
 // User Registration
 Route::post('/register', [AuthController::class, 'register']);
@@ -30,6 +31,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // returns all websites with their status
     Route::get('/websites', [WebsiteController::class, 'index']);
+
+    // returns all monitoring logs
+    Route::get('/monitoring-logs', [MonitoringLogsController::class, 'index']);
+
+    Route::get('/monitoring-logs-data/{website_id}', [MonitoringLogsController::class, 'show']);
     
     Route::get('/user', [UserController::class, 'user']);
     Route::post('/logout', function (Request $request) {

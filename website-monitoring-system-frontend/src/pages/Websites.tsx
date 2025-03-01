@@ -6,7 +6,7 @@ type Website = {
   id: number;
   url: string;
   status: "up" | "down" | "unknown";
-  lastCheckedAt: string;
+  last_checked_at: string | null;
 }
 
 const Websites = () => {
@@ -16,19 +16,18 @@ const Websites = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(()=>{
-    axios.get("http://127.0.0.1:8000/api/websites")
-    .then((response) => {
-      setWebsites(response.data);
-      setLoading(false);
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/api/websites", {
+      headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
     })
-    .catch((error)=>{
-      console.error("Error fetching websites: ", error);
-      setError("Failed to load websites.");
-      setLoading(false);
-    })
-  // finally we have to add an empty array for ensures it runs only once when the component mounts
-  },[]);
+      .then((response) => {
+        setWebsites(response.data.websites);
+      })
+      .catch((error) => {
+        console.error("Error fetching websites: ", error);
+      })
+    // finally we have to add an empty array for ensures it runs only once when the component mounts
+  }, []);
 
   return (
     <div className="p-4">
@@ -48,14 +47,14 @@ const Websites = () => {
               <td className="py-2 px-4 border-b text-center">
                 <span
                   className={`px-2 py-1 rounded text-white ${website.status === "up"
-                      ? "bg-green-500"
-                      : website.status === "down"
-                        ? "bg-red-500"
-                        : "bg-gray-500"
+                    ? "bg-green-500"
+                    : website.status === "down"
+                      ? "bg-red-500"
+                      : "bg-gray-500"
                     }`}
                 >{website.status.toUpperCase()}</span>
               </td>
-              <td className="py-2 px-4 border-b text-center">{!website.lastCheckedAt == null ? website.lastCheckedAt: "Unknown"}</td>
+              <td className="py-2 px-4 border-b text-center">{website.last_checked_at ? website.last_checked_at : "Unknown"}</td>
             </tr>
           ))}
         </tbody>

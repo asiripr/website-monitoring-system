@@ -44,8 +44,8 @@ const SideBar = () => {
                             <FaPlus className="inline mr-2" /> Add Website
                         </Link>
                     </li>
-                    <li className={activeLink === '/monitoring' ? 'text-white' : ''} onClick={() => handleLinkClick('/monitoring')}>
-                        <Link to="/monitoring" className="flex items-center p-2 hover:text-white">
+                    <li className={activeLink === '/monitoring-logs' ? 'text-white' : ''} onClick={() => handleLinkClick('/monitoring-logs')}>
+                        <Link to="/monitoring-logs" className="flex items-center p-2 hover:text-white">
                             <FaChartBar className="inline mr-2" /> Monitoring Logs
                         </Link>
                     </li>

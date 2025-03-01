@@ -41,8 +41,8 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<Websites />} />
           <Route path="/websites/add" element={<AddWebsites />} />
-          <Route path="/monitoring" element={<MonitoringLogs />} />
-          <Route path="/monitoring/logs/:id" element={<MonitoringLogsDetails />} />
+          <Route path="/monitoring-logs" element={<MonitoringLogs />} />
+          <Route path="/monitoring-logs/:id" element={<MonitoringLogsDetails />} />
           <Route path="/musers" element={<ManageUsers/>} />
           <Route path="/mroles" element={<ManageRoles />} />
           <Route path="/settings" element={<Settings />} />

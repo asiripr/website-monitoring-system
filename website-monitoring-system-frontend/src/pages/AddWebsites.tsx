@@ -32,7 +32,7 @@ const AddWebsites = () => {
       );
       alert("Website added successfully!");
       // redirect after success
-      // navigate("/websites");
+      navigate("/websites");
 
     } catch (error) {
       console.error("Failed to add website", error);
