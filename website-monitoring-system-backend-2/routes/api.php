@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MonitoringLogsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use App\Models\Website;
@@ -12,14 +13,8 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response()->noContent();
 });
 
-// fetch websites
-Route::get('/websites', function () {
-    return response()->json(Website::all());
-});
-
-
-Route::post('/add-website', [WebsiteController::class, 'store']);
-
+// returns detailed logs for a specific website
+Route::get('/websites/{id}', [WebsiteController::class, 'show']); // ***
 
 // User Registration
 Route::post('/register', [AuthController::class, 'register']);
@@ -29,6 +24,19 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {
+
+
+    // add new website
+    Route::post('/add-website', [WebsiteController::class, 'store']);
+
+    // returns all websites with their status
+    Route::get('/websites', [WebsiteController::class, 'index']);
+
+    // returns all monitoring logs
+    Route::get('/monitoring-logs', [MonitoringLogsController::class, 'index']);
+
+    Route::get('/monitoring-logs-data/{website_id}', [MonitoringLogsController::class, 'show']);
+    
     Route::get('/user', [UserController::class, 'user']);
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
@@ -40,6 +48,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user/password', [UserController::class, 'changePassword']);
     // account delete
     Route::delete('/user', [UserController::class, 'destroy']);
+
+    // // returns all websites with their status
+    // Route::get('/websites', [WebsiteController::class, 'index']);
+
+    // // returns detailed logs for a specific website
+    // Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {

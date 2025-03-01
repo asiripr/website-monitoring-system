@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CheckWebsiteStatus;
 use App\Models\Website;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,11 @@ class WebsiteController extends Controller
      */
     public function index()
     {
-        //
+        $websites = Website::all();
+
+        return response()->json([
+            'websites' => $websites
+        ]);
     }
 
     /**
@@ -28,25 +33,26 @@ class WebsiteController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        // $input = $request->validate([
-        //     'name' => 'required|string',
-        //     'url' => 'required|url',
-        //     'status' => 'nullable|string',
-        //     'last_checked_at' => 'nullable|date',
-        // ]);
+
+        $input = $request->validate([
+            'url' => 'required|url',
+        ]);
 
         // get the authenticated user from the token
         $user = $request->user();
 
-        // $input['user_id'] = $request->user()->id;
-        $input['user_id'] = 12;
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        $input['user_id'] = $user->id;
 
         $input['status'] = $input['status'] ?? 'unknown';
 
         $input['last_checked_at'] = $input['last_checked_at'] ?? null;
 
         $website = Website::create($input);
+
+        CheckWebsiteStatus::dispatch($website);
 
         return response()->json([
             'message' => 'Website created successfully',
@@ -84,5 +90,10 @@ class WebsiteController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function checkNow(Website $website)
+    {
+        CheckWebsiteStatus::dispatch($website);
     }
 }

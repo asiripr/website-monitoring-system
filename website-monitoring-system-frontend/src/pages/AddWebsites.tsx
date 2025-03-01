@@ -16,7 +16,6 @@ const AddWebsites = () => {
 
     try {
       await API.get("/sanctum/csrf-cookie");
-
       console.log({ url });
 
       const token = localStorage.getItem('auth_token');
@@ -31,8 +30,6 @@ const AddWebsites = () => {
           },
         }
       );
-      //return response.data;
-
       alert("Website added successfully!");
       // redirect after success
       navigate("/websites");

@@ -32,6 +32,8 @@ const Login = () => {
       // const user = await getUser();
       alert("Login Successful!");
 
+      
+
       // redirect to dashboard
       navigate("/dashboard");
     } catch (error) {

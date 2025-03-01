@@ -1,24 +1,35 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface MonitoringLogs {
+interface Website {
   id: number;
   url: string;
 }
 
-const dummyMonitoringLogs: MonitoringLogs[] = [
-  { id: 1, url: "https://google.com" },
-  { id: 2, url: "https://facebook.com" },
-  { id: 3, url: "https://fourpixell.com" }
-]
-
-
 const MonitoringLogs: React.FC = () => {
   const navigate = useNavigate();
 
+  // data fetching part
+  const [website, setWebsite] = useState<Website[]>([]);
+
+
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/api/websites", {
+      headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+    })
+      .then((response) => {
+        setWebsite(response.data.websites);
+      })
+      .catch((error) => {
+        console.error("Error fetching websites: ", error);
+      })
+    // finally we have to add an empty array for ensures it runs only once when the component mounts
+  }, []);
+
   const handleViewDetails = (websiteId: number) => {
     // navigate to the details page for the selected website.
-    navigate(`/monitoring/logs/${websiteId}`);
+    navigate(`/monitoring-logs/${websiteId}`);
   }
   return (
     <div className="p-4">
@@ -31,7 +42,7 @@ const MonitoringLogs: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {dummyMonitoringLogs.map((entry) => (
+          {website.map((entry) => (
             <tr key={entry.id}>
               <td className="py-2 px-4 border-b text-center">{entry.url}</td>
               <td className="py-2 px-4 border-b text-center">
