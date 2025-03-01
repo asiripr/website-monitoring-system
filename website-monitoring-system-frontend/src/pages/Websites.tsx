@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-// the structur of websites table
+// the structure of websites table
 type Website = {
   id: number;
   url: string;

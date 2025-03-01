@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CheckWebsiteStatus;
 use App\Models\Website;
 use Illuminate\Http\Request;
 
@@ -47,6 +48,8 @@ class WebsiteController extends Controller
 
         $website = Website::create($input);
 
+        CheckWebsiteStatus::dispatch($website);
+
         return response()->json([
             'message' => 'Website created successfully',
             'website' => $website,
@@ -83,5 +86,10 @@ class WebsiteController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function checkNow(Website $website)
+    {
+        CheckWebsiteStatus::dispatch($website);
     }
 }

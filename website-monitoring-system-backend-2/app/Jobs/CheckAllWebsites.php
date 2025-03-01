@@ -4,11 +4,14 @@ namespace App\Jobs;
 
 use App\Models\Website;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class CheckAllWebsites implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
      * Create a new job instance.
