@@ -28,26 +28,28 @@ class WebsiteController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->all();
-        // $validated = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'url' => 'required|url|unique:websites,url',
-        //     'status' => 'nullable|string|in:up,down',
-        //     'last_checked_at' => 'nullable|date'
-        // ]);
 
-        $website = Website::create([
-            'user_id' => 12,
-            // 'user_id' => $request->user()->id,
-            'name' => $validated['name'],
-            'url' => $validated['url'],
-            'status' => $validated['status'] ?? 'unknown',
-            'last_checked_at' => $validated['last_checked_at'] ?? now()
+        $input = $request->validate([
+            'url' => 'required|url',
         ]);
+
+        // get the authenticated user from the token
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        $input['user_id'] = $user->id;
+
+        $input['status'] = $input['status'] ?? 'unknown';
+
+        $input['last_checked_at'] = $input['last_checked_at'] ?? null;
+
+        $website = Website::create($input);
 
         return response()->json([
             'message' => 'Website created successfully',
-            'website' => $website
+            'website' => $website,
         ], 201);
     }
 
