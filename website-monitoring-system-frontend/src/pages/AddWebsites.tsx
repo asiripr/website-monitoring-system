@@ -15,11 +15,10 @@ const AddWebsites = () => {
     const token = localStorage.getItem("token");
 
     try {
-      await API.get("/sanctum/csrf-cookie");
-
+      // await API.get("/sanctum/csrf-cookie");
       console.log({ url });
 
-      const token = localStorage.getItem('auth_token');
+      // const token = localStorage.getItem('auth_token');
 
       const response = await API.post(
         "/api/add-website",

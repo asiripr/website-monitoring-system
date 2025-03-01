@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\CheckWebsiteStatus;
 use App\Models\Website;
 use Illuminate\Http\Request;
 
@@ -14,7 +13,6 @@ class WebsiteController extends Controller
     public function index()
     {
         //
-        return response()->json(Website::with('monitoringLogs')->get());
     }
 
     /**
@@ -30,51 +28,26 @@ class WebsiteController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        // $input = $request->validate([
-        //     'name' => 'required|string',
-        //     'url' => 'required|url',
-        //     'status' => 'nullable|string',
-        //     'last_checked_at' => 'nullable|date',
+        $validated = $request->all();
+        // $validated = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'url' => 'required|url|unique:websites,url',
+        //     'status' => 'nullable|string|in:up,down',
+        //     'last_checked_at' => 'nullable|date'
         // ]);
-// // ******************new part
 
-//         $validated = $request->validate([
-//             // 'name' => 'required|string|max:255',
-//             'url' => 'required|url|max:512',
-//         ]);
-//         $website = Website::create([
-//             'user_id' => $request->user()->id,
-//             // 'name' => $validated['name'],
-//             'url' => $validated['url'],
-//             'status' => 'unknown',
-//         ]);
-
-//         CheckWebsiteStatus::dispatch($website->id);
-
-//         return response()->json([
-//             'message' => 'Website created successfully',
-//             'website' => $website->load('monitoringLogs'),
-//         ], 201);
-// // ******************new part
-        // get the authenticated user from the token
-        $user = $request->user();
-
-        // $input['user_id'] = $request->user()->id;
-        $input['user_id'] = 12;
-
-        $input['status'] = $input['status'] ?? 'unknown';
-
-        $input['last_checked_at'] = $input['last_checked_at'] ?? null;
-
-        $website = Website::create($input);
-
-        // Check immediately
-        CheckWebsiteStatus::dispatch($website);
+        $website = Website::create([
+            'user_id' => 12,
+            // 'user_id' => $request->user()->id,
+            'name' => $validated['name'],
+            'url' => $validated['url'],
+            'status' => $validated['status'] ?? 'unknown',
+            'last_checked_at' => $validated['last_checked_at'] ?? now()
+        ]);
 
         return response()->json([
             'message' => 'Website created successfully',
-            'website' => $website,
+            'website' => $website
         ], 201);
     }
 
@@ -83,8 +56,7 @@ class WebsiteController extends Controller
      */
     public function show(string $id)
     {
-        $website = Website::with('monitoringLogs')->findOrFail($id);
-        return response()->json($website);
+        //
     }
 
     /**
@@ -109,10 +81,5 @@ class WebsiteController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function checkNow(Website $website)
-    {
-        CheckWebsiteStatus::dispatch($website);
     }
 }

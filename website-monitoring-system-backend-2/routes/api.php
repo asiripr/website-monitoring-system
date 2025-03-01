@@ -12,11 +12,6 @@ Route::get('/sanctum/csrf-cookie', function () {
     return response()->noContent();
 });
 
-Route::post('/add-website', [WebsiteController::class, 'store']);
-
-// returns all websites with their status
-Route::get('/websites', [WebsiteController::class, 'index']);
-
 // returns detailed logs for a specific website
 Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 
@@ -28,6 +23,13 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    // add new website
+    Route::post('/add-website', [WebsiteController::class, 'store']);
+
+    // returns all websites with their status
+    Route::get('/websites', [WebsiteController::class, 'index']);
+
     Route::get('/user', [UserController::class, 'user']);
     Route::post('/logout', function (Request $request) {
         $request->user()->currentAccessToken()->delete();
