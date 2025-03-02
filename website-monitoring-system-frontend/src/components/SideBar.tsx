@@ -12,8 +12,8 @@ const SideBar = () => {
     };
 
     return (
-        <div className="bg-[#616E80] text-gray-300 w-50 h-screen">
-            <nav className="space-y-2 py-4">
+        <div className="bg-[#616E80] text-gray-300 w-64 h-screen">
+            <nav className="space-y-2 py-6 px-4">
                 <ul>
                     <li className={activeLink === '/dashboard' ? 'text-white' : ''} onClick={() => handleLinkClick('/dashboard')}>
                         <Link to="/dashboard" className="flex items-center p-2 hover:text-white">

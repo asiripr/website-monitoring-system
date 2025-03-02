@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MonitoringLogsController;
 use App\Http\Controllers\UserController;
@@ -56,6 +57,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::get('/websites/{id}', [WebsiteController::class, 'show']);
 });
 
-Route::middleware(['auth:sanctum', 'admin'])->get('/admin/dashboard', function () {
-    return response()->json(['message' => 'Welcome Admin!']);
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 });

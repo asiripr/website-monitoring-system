@@ -16,14 +16,16 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()) {
-            if (Auth::user()->usertype === 'admin') {
-                return $next($request);
-            } else {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
+        $user = $request->user(); // Get the authenticated user
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        return response()->json(['message' => 'Unauthenticated'], 401);
+        if ($user->usertype !== 'admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return $next($request);
     }
 }
