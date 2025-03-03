@@ -31,15 +31,19 @@ const Settings: React.FC = () => {
   }, []);
 
   // handle profile update
-  const handleProfileUpdate = async (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const response = await API.put('/user', {
+      await API.get("/sanctum/csrf-cookie");
+
+      const response = await API.put('/api/user', {
         name: user.name,
         email: user.email
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
       });
-      alert("Profile Updated Succesfully!");
+      alert("Profile Updated Successfully!");
       setUser(response.data.user);
     } catch (error) {
       alert("Failed to update profile");
@@ -56,9 +60,12 @@ const Settings: React.FC = () => {
       return;
     }
     try {
-      await API.post('/user/password', {
+      await API.get('/sanctum/csrf-cookie');
+      await API.post('api/user/password', {
         new_password: newPassword,
         new_password_confirmation: confirmPassword
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
       });
       alert("Password updated successfully!");
       setNewPassword("");
@@ -95,13 +102,15 @@ const Settings: React.FC = () => {
     setIsDeleting(true);
 
     try {
-      await API.delete('/user', {
+      await API.get('/sanctum/csrf-cookie');
+      await API.delete('/api/user', {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
         data: { password: currentPassword }
       });
+      alert("Account deleted successfully!");
       // clear tokens
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      alert("Account deleted successfully!");
       navigate("/register");
     } catch (error) {
       alert("Failed to delete account");
@@ -130,7 +139,7 @@ const Settings: React.FC = () => {
             type="email"
             className="w-3/4 border p-2 rounded mb-4"
             value={user.email}
-            readOnly
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
 
           <button

@@ -32,22 +32,18 @@ class UserController extends Controller
     }
 
     // update user profile
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        // Validate that role_id is provided and is one of the allowed values
-        $validated = $request->validate([
-            'role_id' => ['required', 'integer', Rule::in([1, 2])],
-        ]);
+        $user = $request->user();
 
-        // Find the user by ID (throws 404 if not found)
-        $user = User::findOrFail($id);
-
-        // Update the user's role
-        $user->update($validated);
+        $user->name = $request->input('name', $user->name);
+        $user->email = $request->input('email', $user->email);
+        
+        $user->save();
 
         return response()->json([
-            'message' => 'User role updated successfully',
-            'user' => $user,
+            'message' => 'Profile updated successfully',
+            'user'    => $user,
         ]);
     }
 
@@ -96,6 +92,4 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
-
-    
 }

@@ -6,7 +6,8 @@ const ManageUser: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
-    email: ""
+    email: "",
+    role_id: 2
   });
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -119,6 +120,18 @@ const ManageUser: React.FC = () => {
             value={user.email}
             readOnly
           />
+
+          <div className="mb-4">
+            <label className="block">Role</label>
+            <select
+              value={user.role_id}
+              onChange={(e) => setUser({ ...user, role_id: parseInt(e.target.value) })}
+              className="border p-2 rounded w-3/4"
+            >
+              <option value={1}>Admin</option>
+              <option value={2}>User</option>
+            </select>
+          </div>
 
           <button
             type="submit"
