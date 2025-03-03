@@ -4,19 +4,16 @@ import { useEffect, useState } from "react";
 import './index.css';
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import LogoutButton from "./components/LogoutButton";
 import Register from "./pages/Register";
-import SideBar from "./components/SideBar";
-import TopBar from "./components/TopBar";
 import Layout from "./components/Layout";
 import Unauthorized from "./pages/Unauthorized";
 import Websites from "./pages/Websites";
 import AddWebsites from "./pages/AddWebsites";
 import MonitoringLogs from "./pages/MonitoringLogs";
 import ManageUsers from "./pages/ManageUsers";
-import ManageRoles from "./pages/ManageRoles";
 import MonitoringLogsDetails from "./pages/MonitoringLogsDetails";
 import Settings from "./pages/Settings";
+import ManageUser from "./pages/ManageUser";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -33,18 +30,19 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Layout />} />
 
         {/* Protected Routes (Inside Layout) */}
         <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/websites" element={<Websites />} />
           <Route path="/websites/add" element={<AddWebsites />} />
           <Route path="/monitoring-logs" element={<MonitoringLogs />} />
           <Route path="/monitoring-logs/:id" element={<MonitoringLogsDetails />} />
-          <Route path="/musers" element={<ManageUsers/>} />
-          <Route path="/mroles" element={<ManageRoles />} />
+          <Route path="/musers" element={<ManageUsers />} />
+          <Route path="/manage-users/edit/:id" element={<ManageUser />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/settings" element={<Settings />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
         </Route>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 
-const Settings: React.FC = () => {
+const ManageUser: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
-    email: ""
+    email: "",
+    role_id: 2
   });
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -19,7 +21,7 @@ const Settings: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await API.get("/api/user", {
+        const response = await API.get(`/api/manage-users/edit/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         });
         setUser(response.data);
@@ -37,9 +39,10 @@ const Settings: React.FC = () => {
     try {
       await API.get("/sanctum/csrf-cookie");
 
-      const response = await API.put('/api/user', {
+      const response = await API.put(`/api/manage-users/edit/${id}`, {
         name: user.name,
-        email: user.email
+        email: user.email,
+        role_id: user.role_id
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
       });
@@ -61,7 +64,7 @@ const Settings: React.FC = () => {
     }
     try {
       await API.get('/sanctum/csrf-cookie');
-      await API.post('api/user/password', {
+      await API.post(`/api/manage-users/edit/${id}`, {
         new_password: newPassword,
         new_password_confirmation: confirmPassword
       }, {
@@ -77,33 +80,15 @@ const Settings: React.FC = () => {
     }
   };
 
-  // handle logout
-  const handleLogout = async () => {
-    try {
-      await API.post('/logout');
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-    // clear tokens
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
   // handle account deletion
   const handleDeleteAccount = async () => {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
-
-    if (!currentPassword) {
-      alert("Please enter your current password to confirm deletion");
-      return;
-    }
 
     setIsDeleting(true);
 
     try {
       await API.get('/sanctum/csrf-cookie');
-      await API.delete('/api/user', {
+      await API.delete(`/api/manage-users/edit/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
         data: { password: currentPassword }
       });
@@ -111,7 +96,7 @@ const Settings: React.FC = () => {
       // clear tokens
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      navigate("/register");
+      navigate("/musers");
     } catch (error) {
       alert("Failed to delete account");
       console.error(error);
@@ -120,7 +105,7 @@ const Settings: React.FC = () => {
   };
   return (
     <div className="pl-20 pt-6">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
+      <h2 className="text-2xl font-bold mb-4">Manage User</h2>
 
       {/* Profile Information */}
       <div className="mb-6">
@@ -141,6 +126,18 @@ const Settings: React.FC = () => {
             value={user.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
+
+          <div className="mb-4">
+            <label className="block">Role</label>
+            <select
+              value={user.role_id}
+              onChange={(e) => setUser({ ...user, role_id: parseInt(e.target.value) })}
+              className="border p-2 rounded w-3/4"
+            >
+              <option value={1}>Admin</option>
+              <option value={2}>User</option>
+            </select>
+          </div>
 
           <button
             type="submit"
@@ -182,27 +179,9 @@ const Settings: React.FC = () => {
         </form>
       </div>
 
-      {/* Logout Button */}
-      <div className="mb-4">
-        <button onClick={handleLogout} className="w-3/4 bg-gray-600 text-white p-2 rounded hover:bg-gray-700">
-          Logout
-        </button>
-      </div>
-
       {/* Delete Account */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-700">Delete Account</h3>
-        <div className="mt-4">
-          <label className="block text-gray-600">Current Password</label>
-          <input
-            type="password"
-            className="w-3/4 border p-2 rounded mb-2"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-          />
-
-        </div>
         <button
           onClick={handleDeleteAccount}
           className={`w-3/4 bg-red-500 text-white p-2 rounded ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
@@ -219,4 +198,4 @@ const Settings: React.FC = () => {
   );
 };
 
-export default Settings;
+export default ManageUser;

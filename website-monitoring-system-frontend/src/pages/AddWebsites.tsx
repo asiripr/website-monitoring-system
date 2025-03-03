@@ -11,13 +11,11 @@ const AddWebsites = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Get the token from localStorage (ensure it's stored correctly)
-    const token = localStorage.getItem("token");
-
     try {
       await API.get("/sanctum/csrf-cookie");
       console.log({ url });
 
+      // Get the token from localStorage (ensure it's stored correctly)
       const token = localStorage.getItem('auth_token');
 
       const response = await API.post(
@@ -25,9 +23,7 @@ const AddWebsites = () => {
         // attach the url as an oblect
         { url },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         }
       );
       alert("Website added successfully!");
