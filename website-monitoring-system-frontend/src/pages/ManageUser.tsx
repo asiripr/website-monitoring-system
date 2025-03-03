@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 
 const ManageUser: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
@@ -20,7 +21,7 @@ const ManageUser: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await API.get("/api/user", {
+        const response = await API.get(`/api/manage-users/edit/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         });
         setUser(response.data);
@@ -32,15 +33,20 @@ const ManageUser: React.FC = () => {
   }, []);
 
   // handle profile update
-  const handleProfileUpdate = async (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const response = await API.put('/user', {
+      await API.get("/sanctum/csrf-cookie");
+
+      const response = await API.put(`/api/manage-users/edit/${id}`, {
         name: user.name,
-        email: user.email
+        email: user.email,
+        role_id: user.role_id
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
       });
-      alert("Profile Updated Succesfully!");
+      alert("Profile Updated Successfully!");
       setUser(response.data.user);
     } catch (error) {
       alert("Failed to update profile");
@@ -57,9 +63,12 @@ const ManageUser: React.FC = () => {
       return;
     }
     try {
-      await API.post('/user/password', {
+      await API.get('/sanctum/csrf-cookie');
+      await API.post(`/api/manage-users/edit/${id}`, {
         new_password: newPassword,
         new_password_confirmation: confirmPassword
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
       });
       alert("Password updated successfully!");
       setNewPassword("");
@@ -75,22 +84,19 @@ const ManageUser: React.FC = () => {
   const handleDeleteAccount = async () => {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
 
-    if (!currentPassword) {
-      alert("Please enter your current password to confirm deletion");
-      return;
-    }
-
     setIsDeleting(true);
 
     try {
-      await API.delete('/user', {
+      await API.get('/sanctum/csrf-cookie');
+      await API.delete(`/api/manage-users/edit/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
         data: { password: currentPassword }
       });
+      alert("Account deleted successfully!");
       // clear tokens
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      alert("Account deleted successfully!");
-      navigate("/register");
+      navigate("/musers");
     } catch (error) {
       alert("Failed to delete account");
       console.error(error);
@@ -118,7 +124,7 @@ const ManageUser: React.FC = () => {
             type="email"
             className="w-3/4 border p-2 rounded mb-4"
             value={user.email}
-            readOnly
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
           />
 
           <div className="mb-4">

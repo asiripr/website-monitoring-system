@@ -14,18 +14,15 @@ class Admin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        $user = $request->user(); // Get the authenticated user
+        $user = $request->user();
 
-        if (!$user) {
-            return response()->json(['message' => 'Unauthenticated'], 401);
+        // Check if user exists and if role_id equals 1 (admin)
+        if ($user && $user->role_id === 1) {
+            return $next($request);
         }
 
-        if ($user->usertype !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        return $next($request);
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 }

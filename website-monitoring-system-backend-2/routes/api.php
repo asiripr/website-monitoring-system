@@ -40,11 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // monitoring logs data
     Route::get('/monitoring-logs-data/{website_id}', [MonitoringLogsController::class, 'show']);
 
-    // ******* manage users ******
-    Route::get('/manage-users/edit/{user_id}', [ManageUserController::class, 'getUser']);
-    Route::put('/manage-users/edit/{user_id}', [ManageUserController::class, 'updateUser']);
-
-    // ****************************
+    
     
     // Fetch all users
     Route::get('/user', [UserController::class, 'user']);
@@ -71,5 +67,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+
+    // ******* manage users ******
+    Route::get('/manage-users/edit/{user_id}', [ManageUserController::class, 'getUser']);
+    Route::put('/manage-users/edit/{user_id}', [ManageUserController::class, 'updateUser']);
+    Route::post('/manage-users/edit/{user_id}', [ManageUserController::class, 'changePassword']);
+    Route::delete('/manage-users/edit/{user_id}', [ManageUserController::class, 'destroyUser']);
+    // ****************************
 });
