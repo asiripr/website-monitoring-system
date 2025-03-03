@@ -6,7 +6,7 @@ import API from "../services/api";
 
 const SideBar = () => {
     const [activeLink, setActiveLink] = useState('/dashboard');
-    const [user, setUser] = useState({ role_id: 2 }); 
+    const [user, setUser] = useState({ role_id: 2 });
 
     const handleLinkClick = (path) => {
         setActiveLink(path);
@@ -37,15 +37,21 @@ const SideBar = () => {
                             <FaHome className="inline mr-2" /> Dashboard
                         </Link>
                     </li>
-                    {user?.role_id === 1  && (
-                        <>
-                            <li className={activeLink === '/musers' ? 'text-white' : ''} onClick={() => handleLinkClick('/musers')}>
+                    {
+                        user?.role_id === 1 ? (
+                            <li className={activeLink === '/musers' ? 'text-white' : ''} onClick={() => handleLinkClick('/musers')} >
                                 <Link to="/musers" className="flex items-center p-2 hover:text-white">
                                     <FaUsers className="inline mr-2" /> Manage Users
                                 </Link>
                             </li>
-                        </>
-                    )}
+                        ) : (
+                            <li className="text-gray-400 cursor-not-allowed">
+                                <div className="pointer-events-none flex items-center p-2 rounded">
+                                    <FaUsers className="inline mr-2" /> Manage Users
+                                </div>
+                            </li>
+                        )
+                    }
                     <li className={activeLink === '/websites' ? 'text-white' : ''} onClick={() => handleLinkClick('/websites')}>
                         <Link to="/websites" className="flex items-center p-2 hover:text-white">
                             <FaGlobe className="inline mr-2" /> Websites
