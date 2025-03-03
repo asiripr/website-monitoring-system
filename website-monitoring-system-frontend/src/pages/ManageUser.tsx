@@ -1,108 +1,181 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role_id: number;
-};
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 const ManageUser: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState({
+    name: "",
+    email: ""
+  });
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // fetch user data on component mount
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!id) return;
       try {
-        const response = await axios.get(`/api/users/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
+        const response = await API.get("/api/user", {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         });
-        console.log("Fetched user:", response.data);
-        // If your API returns { user: {...} }
-        setUser(response.data.user || response.data);
-      } catch (error: any) {
-        console.error("Error fetching user:", error);
-        setError(error.message || "Failed to fetch user.");
-      } finally {
-        setLoading(false);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
       }
     };
     fetchUser();
-  }, [id]);
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // handle profile update
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    setIsUpdating(true);
     try {
-      await axios.put(
-        `/api/users/${user.id}`,
-        { name: user.name, email: user.email, role_id: user.role_id },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` } }
-      );
-      alert("User updated successfully!");
-      navigate("/manage-users");
-    } catch (error: any) {
-      console.error("Error updating user:", error);
-      setError("Failed to update user.");
+      const response = await API.put('/user', {
+        name: user.name,
+        email: user.email
+      });
+      alert("Profile Updated Succesfully!");
+      setUser(response.data.user);
+    } catch (error) {
+      alert("Failed to update profile");
+      console.error(error);
+    }
+    setIsUpdating(false);
+  };
+
+  // handle password change
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    try {
+      await API.post('/user/password', {
+        new_password: newPassword,
+        new_password_confirmation: confirmPassword
+      });
+      alert("Password updated successfully!");
+      setNewPassword("");
+      setConfirmPassword("");
+
+    } catch (error) {
+      alert("Failed to change password");
+      console.error(error);
     }
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (!user) return <div className="p-4 text-red-500">User not found.</div>;
+  // handle account deletion
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete your account?")) return;
 
+    if (!currentPassword) {
+      alert("Please enter your current password to confirm deletion");
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      await API.delete('/user', {
+        data: { password: currentPassword }
+      });
+      // clear tokens
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      alert("Account deleted successfully!");
+      navigate("/register");
+    } catch (error) {
+      alert("Failed to delete account");
+      console.error(error);
+    }
+
+  };
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Edit User</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block">Name</label>
+    <div className="pl-20 pt-6">
+      <h2 className="text-2xl font-bold mb-4">Manage User</h2>
+
+      {/* Profile Information */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700">Profile Information</h3>
+        <form className="mt-4" onSubmit={handleProfileUpdate}>
+          <label className="block text-gray-600">Name</label>
           <input
             type="text"
+            className="w-3/4 border p-2 rounded mb-2"
             value={user.name}
-            onChange={(e) => {
-              console.log("Updating name to:", e.target.value);
-              setUser({ ...user, name: e.target.value });
-            }}
-            className="border p-2 rounded w-full"
-            required
+            onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
-        </div>
-        <div className="mb-4">
-          <label className="block">Email</label>
+
+          <label className="block text-gray-600">Email</label>
           <input
             type="email"
+            className="w-3/4 border p-2 rounded mb-4"
             value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-            className="border p-2 rounded w-full"
+            readOnly
+          />
+
+          <button
+            type="submit"
+            className={`w-3/4  bg-blue-500 text-white p-2 rounded ${isUpdating ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}`}
+            disabled={isUpdating}
+          >
+            {isUpdating ? "Updating..." : "Update Profile"}
+          </button>
+        </form>
+      </div>
+
+
+      {/* Change Password Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-700">Change Password</h3>
+        <form onSubmit={handleChangePassword} className="mt-4">
+
+          <label className="block text-gray-600">New Password</label>
+          <input
+            type="password"
+            className="w-3/4 border p-2 rounded mb-2"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
             required
           />
-        </div>
-        <div className="mb-4">
-          <label className="block">Role</label>
-          <select
-            value={user.role_id}
-            onChange={(e) => setUser({ ...user, role_id: parseInt(e.target.value) })}
-            className="border p-2 rounded w-full"
-          >
-            <option value={1}>Admin</option>
-            <option value={2}>User</option>
-          </select>
-        </div>
+
+          <label className="block text-gray-600">Confirm Password</label>
+          <input
+            type="password"
+            className="w-3/4 border p-2 rounded mb-4"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="w-3/4 bg-green-500 text-white p-2 rounded hover:bg-green-600">
+            Change Password
+          </button>
+        </form>
+      </div>
+
+      {/* Delete Account */}
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-700">Delete Account</h3>
         <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          onClick={handleDeleteAccount}
+          className={`w-3/4 bg-red-500 text-white p-2 rounded ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
+            }`}
+          disabled={isDeleting}
         >
-          Save Changes
+          {isDeleting ? "Deleting..." : "Delete Account"}
         </button>
-      </form>
+      </div>
+
     </div>
+
+
   );
 };
 
