@@ -31,6 +31,7 @@ const MonitoringLogs: React.FC = () => {
     // navigate to the details page for the selected website.
     navigate(`/monitoring-logs/${websiteId}`);
   }
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Monitoring Logs</h2>
