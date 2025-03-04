@@ -13,6 +13,7 @@ const Settings: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // fetch user data on component mount
 
@@ -23,8 +24,10 @@ const Settings: React.FC = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
         });
         setUser(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch user:", error);
+        setLoading(false);
       }
     };
     fetchUser();
@@ -118,104 +121,139 @@ const Settings: React.FC = () => {
     }
 
   };
+  if (loading) return (
+    <div className="p-4 flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-opacity-50">
+      </div>
+    </div>
+  );
   return (
-    <div className="pl-20 pt-6">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">Account Settings</h2>
 
       {/* Profile Information */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700">Profile Information</h3>
-        <form className="mt-4" onSubmit={handleProfileUpdate}>
-          <label className="block text-gray-600">Name</label>
-          <input
-            type="text"
-            className="w-3/4 border p-2 rounded mb-2"
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-          />
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Profile Information</h3>
+        <form className="space-y-6" onSubmit={handleProfileUpdate}>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Name</label>
+              <input
+                type="text"
+                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={user.name}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+              />
+            </div>
 
-          <label className="block text-gray-600">Email</label>
-          <input
-            type="email"
-            className="w-3/4 border p-2 rounded mb-4"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-          />
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Email</label>
+              <input
+                type="email"
+                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={user.email}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+              />
+            </div>
+          </div>
 
           <button
             type="submit"
-            className={`w-3/4  bg-blue-500 text-white p-2 rounded ${isUpdating ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}`}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
             disabled={isUpdating}
           >
-            {isUpdating ? "Updating..." : "Update Profile"}
+            {isUpdating ? (
+              <span className="flex items-center justify-center">
+                Updating...
+              </span>
+            ) : (
+              "Update Profile"
+            )}
           </button>
         </form>
       </div>
 
-
       {/* Change Password Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-700">Change Password</h3>
-        <form onSubmit={handleChangePassword} className="mt-4">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Change Password</h3>
+        <form onSubmit={handleChangePassword} className="space-y-6">
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">New Password</label>
+              <input
+                type="password"
+                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <label className="block text-gray-600">New Password</label>
-          <input
-            type="password"
-            className="w-3/4 border p-2 rounded mb-2"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-          />
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">Confirm Password</label>
+              <input
+                type="password"
+                className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
 
-          <label className="block text-gray-600">Confirm Password</label>
-          <input
-            type="password"
-            className="w-3/4 border p-2 rounded mb-4"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-
-          <button type="submit" className="w-3/4 bg-green-500 text-white p-2 rounded hover:bg-green-600">
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+          >
             Change Password
           </button>
         </form>
       </div>
 
+      {/* Delete Account Section */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Delete Account</h3>
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-2">Current Password</label>
+            <input
+              type="password"
+              className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleDeleteAccount}
+              className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <span className="flex items-center justify-center">
+
+                  Deleting...
+                </span>
+              ) : (
+                "Delete Account"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Logout Button */}
-      <div className="mb-4">
-        <button onClick={handleLogout} className="w-3/4 bg-gray-600 text-white p-2 rounded hover:bg-gray-700">
+      <div className="text-center">
+        <button
+          onClick={handleLogout}
+          className="bg-gray-600 text-white py-3 px-8 rounded-lg font-semibold hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+        >
           Logout
         </button>
       </div>
-
-      {/* Delete Account */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-700">Delete Account</h3>
-        <div className="mt-4">
-          <label className="block text-gray-600">Current Password</label>
-          <input
-            type="password"
-            className="w-3/4 border p-2 rounded mb-2"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-          />
-
-        </div>
-        <button
-          onClick={handleDeleteAccount}
-          className={`w-3/4 bg-red-500 text-white p-2 rounded ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
-            }`}
-          disabled={isDeleting}
-        >
-          {isDeleting ? "Deleting..." : "Delete Account"}
-        </button>
-      </div>
-
     </div>
-
-
   );
 };
 
