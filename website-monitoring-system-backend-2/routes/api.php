@@ -74,4 +74,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/manage-users/edit/{user_id}', [ManageUserController::class, 'changePassword']);
     Route::delete('/manage-users/edit/{user_id}', [ManageUserController::class, 'destroyUser']);
     // ****************************
+
+    // delete a selected website
+    Route::delete('/websites/delete/{website_id}', [WebsiteController::class, 'destroy']);
 });

@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API from "../services/api";
 
 const TopBar = () => {
     const navigate = useNavigate();
 
-    // Get user from localStorage
-    const user = JSON.parse(localStorage.getItem('user') || '{}');  
+    const [user, setUser] = useState({
+        id: 0,
+        name: "",
+        email: "",
+        role_id: 2
+    });
+
+    useEffect(() => {
+        const checkAuth = async () => {
+          try {
+            // Ensure CSRF token is set if using Sanctum
+            await API.get('/sanctum/csrf-cookie');
+            const response = await API.get('/api/user', {
+              headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
+            });
+            console.log("Authenticated user:", response.data);
+            // Ensure response.data is not an empty object
+            setUser(response.data);
+          } catch (error) {
+            console.error("Authentication error:", error);
+          }
+        };
+        checkAuth();
+      }, []);
 
     // Logout Function
     const handleLogout = async () => {
@@ -22,16 +45,6 @@ const TopBar = () => {
         } catch (error) {
             console.error("Logout failed: ", error);
         }
-    };
-
-    // Navigate to Login Page
-    const handleLogin = () => {
-        navigate("/login");
-    };
-
-    // Navigate to Register Page
-    const handleRegister = () => {
-        navigate("/register");
     };
 
     return (
@@ -51,16 +64,10 @@ const TopBar = () => {
                 ) : (
                     <>
                         <button
-                            onClick={handleLogin}
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            onClick={handleLogout}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                         >
-                            Log In
-                        </button>
-                        <button
-                            onClick={handleRegister}
-                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                        >
-                            Register
+                            Logout
                         </button>
                     </>
                 )}
