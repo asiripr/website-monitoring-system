@@ -42,30 +42,35 @@ const ManageUsers: React.FC = () => {
     navigate(`/manage-users/edit/${userId}`);
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
+  if (loading) return (
+    <div className="p-4 flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-opacity-50">
+      </div>
+    </div>
+  );
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
-      <table className="min-w-full border border-gray-200 bg-white">
-        <thead className="bg-gray-200">
+      <table className="min-w-full divide-y divide-gray-200 bg-white">
+        <thead className="bg-gray-50">
           <tr>
-            <th className="py-2 px-4 border-b text-left">Name</th>
-            <th className="py-2 px-4 border-b text-left">Email</th>
-            <th className="py-2 px-4 border-b text-left">Actions</th>
+            <th className="py-3 px-6 text-left">Name</th>
+            <th className="py-3 px-6 text-left">Email</th>
+            <th className="py-3 px-6 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
           {users.length > 0 ? (
             users.map((user) => (
-              <tr key={user.id} className="border-b">
-                <td className="py-2 px-4">{user.name}</td>
-                <td className="py-2 px-4">{user.email}</td>
-                <td className="py-2 px-4">
+              <tr key={user.id} className="transition-colors hover:bg-gray-50">
+                <td className="py-4 px-6">{user.name}</td>
+                <td className="py-4 px-6">{user.email}</td>
+                <td className="py-4 px-6 text-center">
                   <button
                     onClick={() => handleEdit(user.id)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 mr-2"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                   >
                     Edit
                   </button>
@@ -74,13 +79,14 @@ const ManageUsers: React.FC = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="py-4 text-center">
+              <td colSpan={3} className="py-4 px-6 text-center text-gray-500">
                 No users found.
               </td>
             </tr>
           )}
         </tbody>
       </table>
+
     </div>
   );
 };

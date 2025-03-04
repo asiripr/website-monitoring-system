@@ -29,7 +29,12 @@ const Dashboard: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <div className="p-4">Loading Dashboard...</div>;
+  if (loading) return (
+    <div className="p-4 flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-opacity-50">
+      </div>
+    </div>
+  );
   if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (!dashboard) return <div className="p-4">No data available.</div>;
 

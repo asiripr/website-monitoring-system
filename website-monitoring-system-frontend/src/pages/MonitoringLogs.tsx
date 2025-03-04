@@ -12,6 +12,7 @@ const MonitoringLogs: React.FC = () => {
 
   // data fetching part
   const [website, setWebsite] = useState<Website[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
 
   useEffect(() => {
@@ -20,9 +21,11 @@ const MonitoringLogs: React.FC = () => {
     })
       .then((response) => {
         setWebsite(response.data.websites);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching websites: ", error);
+        setLoading(false);
       })
     // finally we have to add an empty array for ensures it runs only once when the component mounts
   }, []);
@@ -31,25 +34,40 @@ const MonitoringLogs: React.FC = () => {
     // navigate to the details page for the selected website.
     navigate(`/monitoring-logs/${websiteId}`);
   }
-
+  if (loading) return (
+    <div className="p-4 flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-opacity-50">
+      </div>
+    </div>
+  );
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Monitoring Logs</h2>
-      <table className="min-w-full border border-gray-200 bg-white">
-        <thead>
+      <table className="min-w-full divide-y divide-gray-200 bg-white">
+        <thead className="bg-gray-50">
           <tr>
-            <th className="py-2 px-4 border-b">URL</th>
-            <th className="py-2 px-4 border-b">Actions</th>
+            <th className="py-3 px-6 text-center">
+              URL
+            </th>
+            <th className="py-3 px-6 text-center">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
           {website.map((entry) => (
-            <tr key={entry.id}>
-              <td className="py-2 px-4 border-b text-center">{entry.url}</td>
-              <td className="py-2 px-4 border-b text-center">
+            <tr key={entry.id} className="transition-colors hover:bg-gray-50">
+              <td className="py-4 px-6 whitespace-nowrap">
+                <div className="flex items-center">
+                  <span className="ml-2 text-sm font-medium text-gray-800 truncate" title={entry.url}>
+                    {entry.url}
+                  </span>
+                </div>
+              </td>
+              <td className="py-4 px-6 text-center">
                 <button
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                   onClick={() => handleViewDetails(entry.id)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                 >
                   View Details
                 </button>
