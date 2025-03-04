@@ -31,9 +31,6 @@ const TopBar = () => {
         checkAuth();
       }, []);
 
-    // Get user from localStorage
-    // const user = JSON.parse(localStorage.getItem('user') || '{}');  
-
     // Logout Function
     const handleLogout = async () => {
         try {
@@ -48,16 +45,6 @@ const TopBar = () => {
         } catch (error) {
             console.error("Logout failed: ", error);
         }
-    };
-
-    // Navigate to Login Page
-    const handleLogin = () => {
-        navigate("/login");
-    };
-
-    // Navigate to Register Page
-    const handleRegister = () => {
-        navigate("/register");
     };
 
     return (

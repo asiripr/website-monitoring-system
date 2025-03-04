@@ -173,7 +173,7 @@ return [
     // 'secure' => env('SESSION_SECURE_COOKIE', false), 
     
     // Should be false for localhost
-    'secure' => env('SESSION_SECURE_COOKIE', true), 
+    'secure' => env('SESSION_SECURE_COOKIE', 'auto'), 
     /*
     |--------------------------------------------------------------------------
     | HTTP Access Only

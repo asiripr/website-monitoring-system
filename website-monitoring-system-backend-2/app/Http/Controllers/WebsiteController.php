@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\CheckWebsiteStatus;
 use App\Models\Website;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 
 class WebsiteController extends Controller
 {
@@ -87,9 +88,22 @@ class WebsiteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($website_id)
     {
-        //
+        try {
+            $website = Website::findOrFail($website_id);
+            $website->delete();
+
+            return response()->json([
+                'message' => 'Website deleted successfully',
+                'deleted_id' => $website->id
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete website',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function checkNow(Website $website)
