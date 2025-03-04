@@ -10,7 +10,7 @@ Asiri Pramodaya - [LinkedIn](https://www.linkedin.com/in/asiripramodaya/)
 ## ✨ Features
 
 - **User Authentication**  
-  JWT-based authentication with Laravel Sanctum
+  Laravel Sanctum
 - **Role-Based Access Control**  
   Admin/User roles with different privileges
 - **Website Monitoring**  
