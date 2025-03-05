@@ -16,7 +16,7 @@ const ManageUsers: React.FC = () => {
   const [updatingUserIds, setUpdatingUserIds] = useState<number[]>([]);
   const navigate = useNavigate();
 
-  // Fetch user data from backend
+  // Fetch selected user data from backend
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/users", {

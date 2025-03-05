@@ -6,9 +6,15 @@ const ManageUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [user, setUser] = useState({
+    id: 0,
     name: "",
     email: "",
     role_id: 2
+  });
+  const [admin, setAdmin] = useState({
+    id: 0,
+    name: "",
+    email: ""
   });
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -16,6 +22,23 @@ const ManageUser: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // fetch user data on component mount
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const response = await API.get("/api/user", {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        });
+        setAdmin(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch admin:", error);
+        setLoading(false);
+      }
+    };
+    fetchAdmin();
+  }, []);
 
   // fetch user data on component mount
 
@@ -202,18 +225,23 @@ const ManageUser: React.FC = () => {
       </div>
 
       {/* Delete Account Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">Delete Account</h3>
-        <div className="space-y-6">
-          <button
-            onClick={handleDeleteAccount}
-            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Deleting..." : "Delete Account"}
-          </button>
-        </div>
-      </div>
+      {
+        user?.id !== admin?.id && (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">Delete Account</h3>
+            <div className="space-y-6">
+
+              <button
+                onClick={handleDeleteAccount}
+                className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 

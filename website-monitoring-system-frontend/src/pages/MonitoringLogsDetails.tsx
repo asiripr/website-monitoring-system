@@ -28,7 +28,12 @@ const MonitoringLogsDetails: React.FC = () => {
         })
             .then((response) => {
                 // Assumes the API returns a website object with an embedded logs array
-                setDetails(response.data.website);
+                const website = response.data.website;
+                // make logs lateset to oldest
+                website.logs.sort((a,b) => {
+                    return new Date(b.checked_at).getTime() - new Date(a.checked_at).getTime();
+                })
+                setDetails(website);
                 setLoading(false);
             })
             .catch((error) => {
