@@ -22,25 +22,42 @@ const MonitoringLogsDetails: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/monitoring-logs-data/${id}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
-        })
-            .then((response) => {
-                // Assumes the API returns a website object with an embedded logs array
-                const website = response.data.website;
-                // make logs lateset to oldest
-                website.logs.sort((a,b) => {
-                    return new Date(b.checked_at).getTime() - new Date(a.checked_at).getTime();
-                })
-                setDetails(website);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error fetching website details:", error);
-                setError("Failed to load website details.");
-                setLoading(false);
+
+    // fetch monitoring logs data
+    const fetchMonitoringLogsData = async () => {
+
+    }
+
+
+    // Function to fetch website details
+    const fetchWebsiteDetails = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/monitoring-logs-data/${id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
             });
+
+            const website = response.data.website;
+            // Sort logs from latest to oldest
+            website.logs.sort((a,b) => {
+                return new Date(b.checked_at).getTime() - new Date(a.checked_at).getTime();
+            });
+            setDetails(website);
+            setError(null);
+        } catch (error) {
+            console.error("Error fetching website details:", error);
+            setError("Failed to load website details.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // useEffect for live monitoring
+    useEffect(() => {
+        fetchWebsiteDetails();
+        // Set polling every 30 seconds
+        const intervalId = setInterval(fetchWebsiteDetails, 30000);
+        // Cleanup on component unmount
+        return () => clearInterval(intervalId);
     }, [id]);
 
     if (loading) return (

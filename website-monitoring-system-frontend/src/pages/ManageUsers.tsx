@@ -16,26 +16,37 @@ const ManageUsers: React.FC = () => {
   const [updatingUserIds, setUpdatingUserIds] = useState<number[]>([]);
   const navigate = useNavigate();
 
-  // Fetch selected user data from backend
-  useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/users", {
+  // Function to fetch user data
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/users", {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
-      })
-      .then((response) => {
-        // Assuming your API returns { users: [...] }
-        const fetchedUsers = Array.isArray(response.data.users)
-          ? response.data.users
-          : response.data.users || [];
-        setUsers(fetchedUsers);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-        setError("Failed to load users.");
-        setLoading(false);
       });
+
+      // Ensure fetched data is an array
+      const fetchedUsers = Array.isArray(response.data.users)
+        ? response.data.users
+        : response.data.users || [];
+
+      setUsers(fetchedUsers);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setError("Failed to load users.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect for fetching user data
+  useEffect(() => {
+    fetchUsers();
+    // Set polling every 30 seconds
+    const intervalId = setInterval(fetchUsers, 30000);
+    // Cleanup on component unmount
+    return () => clearInterval(intervalId);
   }, []);
+
 
   // Handle editing a user: navigate to the edit page (to be implemented)
   const handleEdit = (userId: number) => {
