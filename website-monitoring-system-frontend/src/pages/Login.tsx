@@ -24,15 +24,11 @@ const Login = () => {
     if (isLoading) return; 
     setIsLoading(true);
     try {
-
       // calls the login function with the current email and password
       await login(email, password);
-
       
       // const user = await getUser();
-      alert("Login Successful!");
-
-      
+      alert("Login Successful!");     
 
       // redirect to dashboard
       navigate("/dashboard");

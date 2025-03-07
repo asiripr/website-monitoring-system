@@ -55,7 +55,7 @@ const AddWebsites = () => {
                 type="text"
                 id="url"
                 value={url}
-                onChange={(e) => setUrl(`https://${e.target.value}`)}
+                onChange={(e) => setUrl(`${e.target.value}`)}
                 placeholder="example.com"
                 required
                 className="flex-1 block w-full px-4 py-3 rounded-r-md border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"

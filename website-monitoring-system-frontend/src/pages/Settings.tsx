@@ -16,7 +16,6 @@ const Settings: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // fetch user data on component mount
-
   useEffect(() => {
     const fetchUser = async () => {
       try {

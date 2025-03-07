@@ -11,24 +11,38 @@ const MonitoringLogs: React.FC = () => {
   const navigate = useNavigate();
 
   // data fetching part
-  const [website, setWebsite] = useState<Website[]>([]);
+  const [website, setWebsites] = useState<Website[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
 
+  // function to fetch website status
+  const fetchWebsites = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/websites", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
+      });
+      setWebsites(response.data.websites || []);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching websites:", error);
+      setError("Failed to load websites.");
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  // useEffect fot live monitoring
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/websites", {
-      headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
-    })
-      .then((response) => {
-        setWebsite(response.data.websites);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching websites: ", error);
-        setLoading(false);
-      })
-    // finally we have to add an empty array for ensures it runs only once when the component mounts
-  }, []);
+    fetchWebsites();
+    // set polling every 30 seconds
+    const intervalId = setInterval(() => {
+      fetchWebsites();
+    }, 30000);
+    // clean up on component unmount
+    return () => clearInterval(intervalId);
+  })
 
   const handleViewDetails = (websiteId: number) => {
     // navigate to the details page for the selected website.
