@@ -11,7 +11,7 @@ type Website = {
   last_checked_at: string | null;
 }
 
-const Websites = () => {
+const Websites: React.FC  = () => {
 
   // data fetching part
   const { id } = useParams<{ id: string }>();
@@ -20,24 +20,38 @@ const Websites = () => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [statuses, setStatuses] = useState<Website[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // function to fetch website status
+  const fetchWebsites = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/websites", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
+      });
+      setWebsites(response.data.websites || []);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching websites:", error);
+      setError("Failed to load websites.");
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
+  // useEffect fot live monitoring
+  useEffect(()=>{
+    fetchWebsites();
+    // set polling every 30 seconds
+    const intervalId = setInterval(()=>{
+      fetchWebsites();
+    }, 30000); // for 30s
 
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/websites", {
-      headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
-    })
-      .then((response) => {
-        setWebsites(response.data.websites);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching websites: ", error);
-        setLoading(false);
-      })
-    // finally we have to add an empty array for ensures it runs only once when the component mounts
-  }, []);
+    // clean up on component unmount
+    return () => clearInterval(intervalId);
+  }),
 
   // fetch user data on component mount
 
