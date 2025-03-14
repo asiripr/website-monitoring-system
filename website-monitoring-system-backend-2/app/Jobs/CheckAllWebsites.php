@@ -25,12 +25,12 @@ class CheckAllWebsites implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
-{
-    Website::select(['id', 'url'])
-        ->chunkById(100, function ($websites) {
-            foreach ($websites as $website) {
-                CheckWebsiteStatus::dispatch($website);
-            }
-        });
-}
+    {
+        Website::select(['id', 'url'])
+            ->chunkById(100, function ($websites) {
+                foreach ($websites as $website) {
+                    CheckWebsiteStatus::dispatch($website);
+                }
+            });
+    }
 }

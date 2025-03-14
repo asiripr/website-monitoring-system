@@ -22,6 +22,8 @@ return new class extends Migration
             $table->enum('status', ['up', 'down', 'unknown'])->default('unknown'); 
             // last checked time
             $table->timestamp('last_checked_at')->nullable();
+            // this field for calculate sum of down time
+            $table->timestamp('down_since')->nullable();
             $table->timestamps();
         });
     }

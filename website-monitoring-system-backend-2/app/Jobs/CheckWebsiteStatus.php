@@ -45,19 +45,40 @@ class CheckWebsiteStatus implements ShouldQueue
             $responseTime = null;
         }
 
-        // update the website record with new status and last checked timestamp
-        $this->website->update([
-            'status' => $status,
-            'last_checked_at' => now(),
-            'response_time' => $responseTime,
-        ]);
-
-        // create a new monitoring record
-        MonitoringLog::create([
-            'website_id' => $this->website->id,
-            'status' => $status,
-            'response_time' => $responseTime,
-            'checked_at' => now()
-        ]);
+        // determine action based on the new status
+        if ($status === 'up') {
+            // if website is up, update the record and clear down_since if previously set.
+            $this->website->update([
+                'status' => 'up',
+                'last_checked_at' => now(),
+                'response_time' => $responseTime,
+                'down_since' => null,
+            ]);
+        } else {
+            // website is down
+            // if website was not already down, set down_since to now.
+            if ($this->website->status !== 'down') {
+                $this->website->update([
+                    'status' => 'down',
+                    'last_checked_at' => now(),
+                    'response_time' => $responseTime,
+                    'down_since' => now(),
+                ]);
+            } else {
+                // if already down, update last_checked_at and response_time without resetting down_since.
+                $this->website->update([
+                    'status' => 'down',
+                    'last_checked_at' => now(),
+                    'response_time' => $responseTime,
+                ]);
+            }
+            // create a monitoring log entry for down status.
+            MonitoringLog::create([
+                'website_id' => $this->website->id,
+                'status' => 'down',
+                'response_time' => $responseTime,
+                'checked_at' => now()
+            ]);
+        }
     }
 }
