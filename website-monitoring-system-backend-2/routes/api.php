@@ -27,7 +27,6 @@ Route::post('/login', [AuthController::class, 'login']);
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {
 
-
     // add new website
     Route::post('/add-website', [WebsiteController::class, 'store']);
 
@@ -39,9 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     // monitoring logs data
     Route::get('/monitoring-logs-data/{website_id}', [MonitoringLogsController::class, 'show']);
-
-    
-    
+  
     // Fetch all users
     Route::get('/user', [UserController::class, 'user']);
 
