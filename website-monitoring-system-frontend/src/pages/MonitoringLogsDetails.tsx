@@ -38,7 +38,7 @@ const MonitoringLogsDetails: React.FC = () => {
 
             const website = response.data.website;
             // Sort logs from latest to oldest
-            website.logs.sort((a,b) => {
+            website.logs.sort((a, b) => {
                 return new Date(b.checked_at).getTime() - new Date(a.checked_at).getTime();
             });
             setDetails(website);
@@ -50,7 +50,6 @@ const MonitoringLogsDetails: React.FC = () => {
             setLoading(false);
         }
     };
-
     // useEffect for live monitoring
     useEffect(() => {
         fetchWebsiteDetails();
@@ -82,27 +81,35 @@ const MonitoringLogsDetails: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                    {details.logs.map((log) => (
-                        <tr key={log.id} className="transition-colors hover:bg-gray-50">
-                            <td className="py-4 px-6">{log.id}</td>
-                            <td className="py-4 px-6 text-center">
-                                <span
-                                    className={`px-2 py-1 rounded text-white ${log.status === "up"
-                                        ? "bg-green-500"
-                                        : log.status === "down"
-                                            ? "bg-red-500"
-                                            : "bg-gray-500"
-                                        }`}
-                                >
-                                    {log.status.toUpperCase()}
-                                </span>
+                    {details.logs.length === 0 ? (
+                        <tr>
+                            <td colSpan={4} className="py-4 px-6 text-center">
+                                No website downs detected
                             </td>
-                            <td className="py-4 px-6 text-center">
-                                {log.response_time > 0 ? `${log.response_time} ms` : "N/A"}
-                            </td>
-                            <td className="py-4 px-6 text-center">{log.checked_at}</td>
                         </tr>
-                    ))}
+                    ) : (
+                        details.logs.map((log) => (
+                            <tr key={log.id} className="transition-colors hover:bg-gray-50">
+                                <td className="py-4 px-6">{log.id}</td>
+                                <td className="py-4 px-6 text-center">
+                                    <span
+                                        className={`px-2 py-1 rounded text-white ${log.status === "up"
+                                            ? "bg-green-500"
+                                            : log.status === "down"
+                                                ? "bg-red-500"
+                                                : "bg-gray-500"
+                                            }`}
+                                    >
+                                        {log.status.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td className="py-4 px-6 text-center">
+                                    {log.response_time > 0 ? `${log.response_time} ms` : "N/A"}
+                                </td>
+                                <td className="py-4 px-6 text-center">{log.checked_at}</td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 

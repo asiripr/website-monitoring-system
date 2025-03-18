@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('role_permissions', function (Blueprint $table) {
-            // auto incrementing primary key
-            $table->id();
+
+            $table->unsignedInteger('permission_id');
+            $table->unsignedInteger('role_id');
+
             // role_id = id column of roles table, and if a record of roles table deleted -> it will removed the all related records within this as well
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             // role_id = id column of roles table, and if a record of roles table deleted -> it will removed the all related records within this as well
-            $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade');
+            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }

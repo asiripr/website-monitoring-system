@@ -9,11 +9,11 @@ class Permission extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description'];
 
     // permission can be assigned to many roles -> many-to-many
     public function roles(){
-        return $this->belongsToMany(Role::class, 'role_permissions');
+        return $this->belongsToMany(Role::class);
     }
 
 }

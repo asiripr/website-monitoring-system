@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            $table->unsignedInteger('role_id');
+
             // auto incrementing primary key
             $table->id();
             // create name column 
@@ -22,10 +24,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             // role_id = id column of roles table, and if a record of roles table deleted -> it will removed the all related recodes within this as well
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
-            $table->timestamps();
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');            $table->timestamps();
         });
-
     }
 
     /**
