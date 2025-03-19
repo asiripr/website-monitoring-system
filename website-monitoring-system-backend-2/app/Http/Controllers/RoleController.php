@@ -7,6 +7,22 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    public function index()
+    {
+        return response()->json([
+            'roles' => Role::with('permissions')->get()
+        ]);
+    }
+
+    public function show($id)
+    {
+        $role = Role::with('permissions')->find($id);
+        if (!$role) {
+            return response()->json(['message' => 'Role not found'], 404);
+        }
+        return response()->json(['role' => $role]);
+    }
+    
     public function store(Request $request)
     {
 

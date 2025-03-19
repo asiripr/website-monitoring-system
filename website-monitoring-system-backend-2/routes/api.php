@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ManageUserController;
 use App\Http\Controllers\MonitoringLogsController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Http\Request;
@@ -74,4 +76,19 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     // delete a selected website
     Route::delete('/websites/delete/{website_id}', [WebsiteController::class, 'destroy']);
+
+    // fetch all roles
+    Route::get('/roles', [RoleController::class, 'index']);
+    
+    // fetch a single role with its permissions
+    Route::get('/roles/{id}', [RoleController::class, 'show']);
+    
+    // update a role with new permissions
+    Route::put('/roles/{id}', [RoleController::class, 'update']);
+
+    // create a new role
+    Route::post('/roles', [RoleController::class, 'store']); 
+
+    // fetch all available permissions
+    Route::get('/permissions', [PermissionController::class, 'index']);
 });

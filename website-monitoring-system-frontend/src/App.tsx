@@ -16,6 +16,10 @@ import MonitoringLogsDetails from "./pages/MonitoringLogsDetails";
 import Settings from "./pages/Settings";
 import ManageUser from "./pages/ManageUser";
 import API from "./services/api";
+import ManageRoles from "./pages/ManageRoles";
+import EditRole from "./pages/EditRole";
+import CreateRole from "./pages/CreateRole";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   const [user, setUser] = useState({
@@ -84,6 +88,11 @@ const App = () => {
             <Route element={<RequireAdmin />}>
               <Route path="/musers" element={<ManageUsers />} />
               <Route path="/manage-users/edit/:id" element={<ManageUser />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              
+              <Route path="/manage-roles" element={<ManageRoles />} />
+              <Route path="/manage-roles/edit/:id" element={<EditRole />} />
+              <Route path="/manage-roles/create" element={<CreateRole />} />
             </Route>
           </Route>
         </Route>
