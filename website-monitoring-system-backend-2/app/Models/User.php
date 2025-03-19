@@ -25,7 +25,6 @@ class User extends Authenticatable
         'password',
         'role_id',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -50,7 +49,18 @@ class User extends Authenticatable
     }
 
     // each user related to single role
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission($permissionName)
+    {
+        foreach ($this->roles as $role) {
+            if ($role->permissions->contains('name', $permissionName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

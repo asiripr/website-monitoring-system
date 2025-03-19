@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 
+interface Role {
+  id: number;
+  name: string;
+  description: string;
+}
+
 const ManageUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -22,6 +28,7 @@ const ManageUser: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   // fetch user data on component mount
   useEffect(() => {
@@ -56,6 +63,21 @@ const ManageUser: React.FC = () => {
       }
     };
     fetchUser();
+  }, []);
+
+  // Fetch roles
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await API.get('/api/roles', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        });
+        setRoles(response.data.roles);
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
+      }
+    };
+    fetchRoles();
   }, []);
 
   // handle profile update
@@ -171,8 +193,9 @@ const ManageUser: React.FC = () => {
                 onChange={(e) => setUser({ ...user, role_id: parseInt(e.target.value) })}
                 className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value={1}>Admin</option>
-                <option value={2}>User</option>
+                {roles.map(role => (
+                  <option key={role.id} value={role.id}>{role.name}</option>
+                ))}
               </select>
             </div>
           </div>

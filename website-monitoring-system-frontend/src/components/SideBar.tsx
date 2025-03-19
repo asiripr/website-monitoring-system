@@ -43,11 +43,11 @@ const SideBar = () => {
                     {user?.role_id === 1 && (
                         <li>
                             <Link
-                                to="/musers"
-                                onClick={() => handleLinkClick('/musers')}
+                                to="/admin"
+                                onClick={() => handleLinkClick('/admin')}
                                 className={`flex items-center px-4 py-3 text-base font-semibold rounded hover:bg-gray-700 transition-colors ${activeLink === '/musers' ? 'text-white bg-gray-700' : 'text-gray-400'}`}
                             >
-                                <FaUsers className="text-lg mr-3" /> Manage Users
+                                <FaUsers className="text-lg mr-3" /> Admin Dashboard
                             </Link>
                         </li>
                     )}

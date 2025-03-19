@@ -17,7 +17,14 @@ class AuthController extends Controller
 
         ]);
 
-        $roleId = $request->role_id ?? 2; // Default role_id = 2 for "User"
+        // check if this is the first user in the system
+        $isFirstUser = User::count() === 0;
+
+        if ($isFirstUser) {
+            $roleId = 1;
+        } else {
+            $roleId = $request->role_id ?? 2; // Default role_id = 2 for "User"
+        }      
 
         $user = User::create(
             [
@@ -62,13 +69,6 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token->plainTextToken
         ];
-        // if (Auth::attempt($request)) {
-        //     $user = Auth::user();
-        //     return response()->json([
-        //         'user' => $user,
-        //         'token' => $token, // Send the token to the frontend
-        //     ]);
-        // }
     }
 
     public function logout(Request $request)
