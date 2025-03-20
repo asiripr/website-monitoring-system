@@ -48,7 +48,7 @@ const App = () => {
         setLoading(false);
       }
     };
-  
+
     checkAuth();
   }, []);
 
@@ -62,9 +62,12 @@ const App = () => {
     return user.role_id === 1 ? <Outlet /> : <Navigate to="/unauthorized" replace />;
   };
 
-  if (loading) {
-    return <div className="p-4">Loading...</div>;
-  }
+  if (loading) return (
+    <div className="p-4 flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-opacity-50">
+      </div>
+    </div>
+  );
 
   return (
     <Router>
@@ -89,7 +92,7 @@ const App = () => {
               <Route path="/musers" element={<ManageUsers />} />
               <Route path="/manage-users/edit/:id" element={<ManageUser />} />
               <Route path="/admin" element={<AdminDashboard />} />
-              
+
               <Route path="/manage-roles" element={<ManageRoles />} />
               <Route path="/manage-roles/edit/:id" element={<EditRole />} />
               <Route path="/manage-roles/create" element={<CreateRole />} />

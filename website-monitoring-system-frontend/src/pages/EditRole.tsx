@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 
@@ -9,26 +8,39 @@ const EditRole: React.FC = () => {
   const [roleName, setRoleName] = useState("");
   const [permissions, setPermissions] = useState<{ id: number; name: string }[]>([]);
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRoleData = async () => {
       try {
-        const roleResponse = await API.get(`api/roles/${id}`);
+        const roleResponse = await API.get(`/api/roles/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        });
         setRoleName(roleResponse.data.role.name);
-        setSelectedPermissions(roleResponse.data.role.permissions.map((p: any) => p.id));
-      } catch (err) {
+        setSelectedPermissions(
+          roleResponse.data.role.permissions.map((p: any) => p.id)
+        );
+      } catch (err: any) {
         setError("Failed to load role data.");
-      } finally {
-        setLoading((prevLoading) => ({
-          ...prevLoading,
-          role: false
-        }));
+        console.error(err);
       }
     };
-  
+
+    const fetchPermissions = async () => {
+      try {
+        const permResponse = await API.get("/api/permissions", {
+          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+        });
+        setPermissions(permResponse.data.permissions);
+      } catch (err: any) {
+        setError("Failed to load permissions.");
+        console.error(err);
+      }
+    };
+
     fetchRoleData();
+    fetchPermissions();
   }, [id]);
 
   const handlePermissionToggle = (permissionId: number) => {
@@ -39,16 +51,24 @@ const EditRole: React.FC = () => {
     );
   };
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await axios.put(`http://127.0.0.1:8000/api/roles/${id}`, {
+      await API.put(`/api/roles/${id}`, {
         name: roleName,
         permissions: selectedPermissions,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
       });
       navigate("/manage-roles");
-    } catch (err) {
+    } catch (err: any) {
       setError("Failed to update role.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -86,6 +86,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // update a role with new permissions
     Route::put('/roles/{id}', [RoleController::class, 'update']);
 
+    // delete existing user role
+    Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
+
     // create a new role
     Route::post('/roles', [RoleController::class, 'store']); 
 

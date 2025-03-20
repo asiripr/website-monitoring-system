@@ -22,7 +22,7 @@ class RoleController extends Controller
         }
         return response()->json(['role' => $role]);
     }
-    
+
     public function store(Request $request)
     {
 
@@ -42,7 +42,7 @@ class RoleController extends Controller
             $role->permissions()->attach($data['permissions']);
         }
 
-        return redirect()->back()->with('success', 'Role created successfully.');
+        return response()->json(['message' => 'Role created successfully'], 201);
     }
 
     public function update(Request $request, $id)
@@ -60,9 +60,41 @@ class RoleController extends Controller
             'description' => $data['description'] ?? null,
         ]);
 
-        // sync the permissions -> this will remove any not in the array and add new ones
+        // Sync permissions
         $role->permissions()->sync($data['permissions'] ?? []);
 
-        return redirect()->back()->with('success', 'Role updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Role updated successfully',
+            'role' => $role
+        ], 200);
+    }
+
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id);
+
+        // Prevent deletion of protected roles (admin and user)
+        if ($role->id === 1 || $role->id === 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete protected system roles'
+            ], 403);
+        }
+
+        // Check if role is assigned to any users
+        if ($role->users()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete role that is assigned to users'
+            ], 400);
+        }
+
+        $role->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Role deleted successfully'
+        ], 200);
     }
 }
