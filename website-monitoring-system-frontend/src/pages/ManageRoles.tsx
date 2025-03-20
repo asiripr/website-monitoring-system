@@ -38,6 +38,21 @@ const ManageRoles: React.FC = () => {
         navigate(`/manage-roles/edit/${roleId}`);
     };
 
+    const handleDeleteRole = async (roleId: number) => {
+        if (!window.confirm("Are you sure you want to delete this role?")) return;
+
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/roles/${roleId}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("auth_token")}` },
+            });
+            setRoles(roles.filter(role => role.id !== roleId));
+            alert("Role deleted successfully");
+        } catch (error) {
+            console.error("Error deleting role:", error);
+            alert("Failed to delete role");
+        }
+    };
+
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">Manage Roles</h2>
@@ -64,12 +79,20 @@ const ManageRoles: React.FC = () => {
                                         <td className="py-4 px-6">{role.name}</td>
                                         <td className="py-4 px-6">{role.description}</td>
                                         <td className="py-4 px-6 text-center">
-                                            <button
-                                                onClick={() => handleEditRole(role.id)}
-                                                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                                            >
-                                                Edit Privileges
-                                            </button>
+                                            <div className="flex justify-center gap-2">
+                                                <button
+                                                    onClick={() => handleEditRole(role.id)}
+                                                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteRole(role.id)}
+                                                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

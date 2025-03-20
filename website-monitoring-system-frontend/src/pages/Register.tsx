@@ -1,5 +1,5 @@
 import { useState } from "react"; // store and update values
-import {  register } from "../services/auth";
+import { register } from "../services/auth";
 import { useNavigate } from "react-router-dom"; // navigate to different routes
 import React from "react";
 
@@ -18,6 +18,9 @@ const Register = () => {
 
     // redirect the user to the dashboard if the Register is successfull
     const navigate = useNavigate();
+
+    // to prevent double press the button
+    const [isLoading, setIsLoading] = useState(false);
 
     // function for handle the form submission
     const handleRegister = async (e: React.FormEvent) => {
@@ -90,9 +93,10 @@ const Register = () => {
                     />
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        disabled={isLoading}
+                        className={isLoading ? "w-full bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-600" : "w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"}
                     >
-                        Register
+                        {isLoading ? "Registering..." : "Register"}
                     </button>
                 </form>
                 <p className="text-center mt-4 text-black">

@@ -12,6 +12,7 @@ const Login = () => {
 
   // redirect the user to the dashboard if the login is successfull
   const navigate = useNavigate();
+
   // to prevent double press the button
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,6 +24,7 @@ const Login = () => {
     // Prevent multiple submissions
     if (isLoading) return; 
     setIsLoading(true);
+
     try {
       // calls the login function with the current email and password
       await login(email, password);
@@ -69,7 +71,7 @@ const Login = () => {
             disabled={isLoading}
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="text-center mt-4 text-black">

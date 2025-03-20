@@ -11,7 +11,7 @@ type Website = {
   last_checked_at: string | null;
 }
 
-const Websites: React.FC  = () => {
+const Websites: React.FC = () => {
 
   // data fetching part
   const { id } = useParams<{ id: string }>();
@@ -42,10 +42,10 @@ const Websites: React.FC  = () => {
   }
 
   // useEffect fot live monitoring
-  useEffect(()=>{
+  useEffect(() => {
     fetchWebsites();
     // set polling every 30 seconds
-    const intervalId = setInterval(()=>{
+    const intervalId = setInterval(() => {
       fetchWebsites();
     }, 30000); // for 30s
 
@@ -53,22 +53,22 @@ const Websites: React.FC  = () => {
     return () => clearInterval(intervalId);
   }),
 
-  // fetch user data on component mount
+    // fetch user data on component mount
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        await API.get('/sanctum/csrf-cookie');
-        const response = await API.get("/api/user", {
-          headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
-        });
-        setUser(response.data);
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-    fetchUser();
-  }, []);
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          await API.get('/sanctum/csrf-cookie');
+          const response = await API.get("/api/user", {
+            headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` }
+          });
+          setUser(response.data);
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+        }
+      };
+      fetchUser();
+    }, []);
 
   const handleDelete = async (websiteId: number) => {
     if (!window.confirm("Are you sure you want to delete your account?")) return;
