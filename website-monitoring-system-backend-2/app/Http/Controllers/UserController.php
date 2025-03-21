@@ -27,8 +27,11 @@ class UserController extends Controller
             'id' => $request->user()->id,
             'name' => $request->user()->name,
             'email' => $request->user()->email,
-            'role_id' => $request->user()->role_id
+            'role_id' => $request->user()->role_id,
+            'permissions' => $request->user()->role->permissions->pluck('name')->toArray()
         ]);
+
+       
     }
 
     // update user profile
