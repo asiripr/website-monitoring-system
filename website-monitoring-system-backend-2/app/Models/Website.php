@@ -12,7 +12,7 @@ class Website extends Model
     protected $table = 'websites';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['user_id', 'url', 'status', 'last_checked_at'];
+    protected $fillable = ['user_id', 'url', 'status', 'last_checked_at', 'down_since'];
 
     // user can be assigned to many websites -> one-to-many
     public function user(){

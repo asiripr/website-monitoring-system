@@ -17,7 +17,8 @@ class DashboardController extends Controller
                 return [
                     'id' => $website->id,
                     'url' => $website->url,
-                    'status' => $website->status
+                    'status' => $website->status,
+                    'down_since' => $website->down_since
                 ];
             })
         ];
