@@ -14,6 +14,7 @@ class PermissionsTableSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            ['name' => 'manage_users', 'description' => 'admin privilege'],
             ['name' => 'edit_user_details', 'description' => 'Can edit user details'],
             ['name' => 'delete_website', 'description' => 'Can delete websites'],
         ];

@@ -56,11 +56,7 @@ class User extends Authenticatable
 
     public function hasPermission($permissionName)
     {
-        foreach ($this->roles as $role) {
-            if ($role->permissions->contains('name', $permissionName)) {
-                return true;
-            }
-        }
-        return false;
+        // if the user has a role with a permissions relationship, check that list.
+        return $this->role && $this->role->permissions->contains('name', $permissionName);
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/sanctum/csrf-cookie', function () {
     return response()->noContent();
 });
-
-// returns detailed logs for a specific website
-Route::get('/websites/{id}', [WebsiteController::class, 'show']); // ***
 
 // User Registration
 Route::post('/register', [AuthController::class, 'register']);
@@ -29,6 +27,9 @@ Route::post('/login', [AuthController::class, 'login']);
 // Protected routes (auth required)
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    // returns detailed logs for a specific website
+    Route::get('/websites/{id}', [WebsiteController::class, 'show']);
+
     // add new website
     Route::post('/add-website', [WebsiteController::class, 'store']);
 
@@ -37,10 +38,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // returns all monitoring logs
     Route::get('/monitoring-logs', [MonitoringLogsController::class, 'index']);
-    
+
     // monitoring logs data
     Route::get('/monitoring-logs-data/{website_id}', [MonitoringLogsController::class, 'show']);
-  
+
     // Fetch all users
     Route::get('/user', [UserController::class, 'user']);
 
@@ -50,7 +51,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     // profile update
     Route::put('/user', [UserController::class, 'update']);
-    
+
     // change password
     Route::post('/user/password', [UserController::class, 'changePassword']);
     // account delete
@@ -62,10 +63,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/users/{id}', [UserController::class, 'updateRole']);
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
-
 });
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum', CheckPermission::class . ':manage_users'])->group(function () {
 
     // ******* manage users ******
     Route::get('/manage-users/edit/{user_id}', [ManageUserController::class, 'getUser']);
@@ -79,10 +79,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     // fetch all roles
     Route::get('/roles', [RoleController::class, 'index']);
-    
+
     // fetch a single role with its permissions
     Route::get('/roles/{id}', [RoleController::class, 'show']);
-    
+
     // update a role with new permissions
     Route::put('/roles/{id}', [RoleController::class, 'update']);
 
@@ -90,7 +90,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
 
     // create a new role
-    Route::post('/roles', [RoleController::class, 'store']); 
+    Route::post('/roles', [RoleController::class, 'store']);
 
     // fetch all available permissions
     Route::get('/permissions', [PermissionController::class, 'index']);
